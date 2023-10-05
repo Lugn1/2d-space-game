@@ -5,16 +5,24 @@ pygame.font.init()
 
 WIDTH, HEIGHT = 1000, 800
 PLAYER_WIDTH = 45
-PLAYER_HEIGHT = 20
-PLAYER_VELOCITY = 5
+PLAYER_HEIGHT = 30
+PLAYER_VELOCITY = 7
+BULLET_VELOCITY = 9
+BULLET_WIDTH = 6
+BULLET_HEIGHT = 12
+bullets = []
+
+
+PROJECTILE_WIDTH = 6
+PROJECTILE_HEIGHT = 12
+PROJECTILE_VELOCITY = 3
+projectiles = []
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Dodge")
 
 FONT = pygame.font.SysFont("comicsans", 30)
-PROJECTILE_WIDTH = 6
-PROJECTILE_HEIGHT = 12
-PROJECTILE_VELOCITY = 3
+
 
 try:
     BG = pygame.image.load("./img/lvl1bg.jpg")
@@ -23,6 +31,9 @@ try:
 except Exception as e:
     print("Error loading image", e)
 
+def shoot(x, y):
+    bullet = pygame.Rect(x, y - BULLET_HEIGHT, BULLET_WIDTH, BULLET_HEIGHT)
+    bullets.append(bullet)
 
 def draw(player, elapsed_time, projectiles):
     WIN.blit(BG, (0, 0))
@@ -32,8 +43,10 @@ def draw(player, elapsed_time, projectiles):
 
     WIN.blit(playerShip, (player.x, player.y))
 
-    #pygame.draw.rect(WIN, "red", player, 2)
+    pygame.draw.rect(WIN, "red", player, 2)
     
+    for bullet in bullets:
+        pygame.draw.rect(WIN, "green", bullet)
 
     for projectile in projectiles:
         pygame.draw.rect(WIN, "red", projectile)
@@ -54,9 +67,9 @@ def main():
     projectile_add_increment = 2000
     projectile_count = 0
 
-    projectiles = []
     hit = False
-
+    spacebar_held = False
+    can_shoot = True
 
     while run:
         projectile_count += clock.tick(60)
@@ -84,7 +97,20 @@ def main():
         if (keys[pygame.K_w] or keys[pygame.K_UP]):
             player.y = max(0, player.y - PLAYER_VELOCITY) 
         if (keys[pygame.K_s] or keys[pygame.K_DOWN]):
-            player.y = min(HEIGHT - PLAYER_HEIGHT, player.y + PLAYER_VELOCITY)       
+            player.y = min(HEIGHT - PLAYER_HEIGHT, player.y + PLAYER_VELOCITY) 
+        if (keys[pygame.K_SPACE]):
+            if not spacebar_held and can_shoot:
+                shoot(player.x + PLAYER_WIDTH/2 - BULLET_WIDTH/2, player.y)  
+                can_shoot = False
+            spacebar_held = True
+        else:
+            spacebar_held = False
+            can_shoot = True        
+
+        for bullet in bullets[:]:
+            bullet.y -= BULLET_VELOCITY
+            if bullet.y < 0:
+                bullets.remove(bullet)
 
         for projectile in projectiles[:]:
             projectile.y += PROJECTILE_VELOCITY
