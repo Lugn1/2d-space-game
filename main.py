@@ -14,8 +14,8 @@ PLAYER_HEIGHT = 30
 PLAYER_VELOCITY = 3
 
 BULLET_VELOCITY = 5
-BULLET_WIDTH = 6
-BULLET_HEIGHT = 12
+BULLET_WIDTH = 20
+BULLET_HEIGHT = 30
 bullets = []
 
 ENEMY_VELOCITY = 1
@@ -43,31 +43,31 @@ try:
     playerShip = pygame.image.load("./sprites/playerShip.png")
     enemy1 = pygame.image.load("./sprites/enemy1.png")
     enemy1 = pygame.transform.scale(enemy1, (ENEMY1_WIDTH, ENEMY1_HEIGHT))
-    bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
-   
+    player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
+    bullet_image = pygame.transform.rotate(player_bullet_image, 90)
     
 except Exception as e:
     print("Error loading image", e)
-
-# def shoot(x, y):
-#     bullet = pygame.Rect(x, y - BULLET_HEIGHT, BULLET_WIDTH, BULLET_HEIGHT)
-#     bullets.append(bullet)
 
 def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 
     WIN.blit(BG, (0, 0))
     WIN.blit(player.image, player.rect)
     pygame.draw.rect(WIN, "red", player, 2) 
+    
 
     for enemy in enemies:
         WIN.blit(enemy1, (enemy.x, enemy.y))
+        pygame.draw.rect(WIN, "red", enemy, 2) 
     
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
 
-    for bullet in bullets:
-        WIN.blit(bullet_image, bullet.topleft)
-        #pygame.draw.rect(WIN, "green", bullet)
+    for bullet_tuple in bullets:
+        bullet_rect, bullet_image = bullet_tuple
+        WIN.blit(bullet_image, bullet_rect.topleft)
+        pygame.draw.rect(WIN, "green", bullet_rect, 2) 
+    
 
     for projectile in projectiles:
         pygame.draw.rect(WIN, "red", projectile)
@@ -85,10 +85,11 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 def main():
     run = True
 
-    player = Player(WIDTH/2 - 40, HEIGHT/2, playerShip, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_VELOCITY, HEIGHT, WIDTH)
+    player = Player(WIDTH/2 - 40, HEIGHT/2, playerShip, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_VELOCITY, HEIGHT, WIDTH, BULLET_WIDTH, BULLET_HEIGHT)
     clock = pygame.time.Clock()
     start_time = time.time()
     elapsed_time = 0
+    global bullet_image
     
     enemy_spawn_increment = 1500
     enemy_count = 0
@@ -192,14 +193,18 @@ def main():
             spacebar_held = False
             can_shoot = True        
 
-        for bullet in bullets[:]:
-            bullet.y -= BULLET_VELOCITY
+        for bullet_tuple in bullets[:]:
+            bullet_rect, _ = bullet_tuple
+            bullet_rect.y -= BULLET_VELOCITY
+            if bullet_rect.y < 0:
+                bullets.remove(bullet_tuple)
 
-        for bullet in bullets[:]:    
+        for bullet_tuple in bullets[:]:
+            bullet_rect, bullet_image = bullet_tuple    
             for enemy in enemies[:]:
-                if bullet.colliderect(enemy.rect):
+                if bullet_rect.colliderect(enemy.rect):
                     enemies.remove(enemy)
-                    bullets.remove(bullet, bullet_image)
+                    bullets.remove(bullet_tuple)
                     break
 
         for projectile in projectiles[:]:
