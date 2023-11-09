@@ -7,7 +7,9 @@ from player.player import Player
 
 pygame.font.init()
 
-WIDTH, HEIGHT = 1000, 800
+WIDTH, HEIGHT = 1920, 1080
+
+clock = pygame.time.Clock()
 
 PLAYER_WIDTH = 45
 PLAYER_HEIGHT = 30
@@ -27,6 +29,7 @@ PROJECTILE_WIDTH = 6
 PROJECTILE_HEIGHT = 12
 PROJECTILE_VELOCITY = 1.5
 projectiles = []
+boss_projectiles = pygame.sprite.Group()
 
 
 
@@ -45,6 +48,7 @@ try:
     enemy1 = pygame.transform.scale(enemy1, (ENEMY1_WIDTH, ENEMY1_HEIGHT))
     player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
     bullet_image = pygame.transform.rotate(player_bullet_image, 90)
+
     
 except Exception as e:
     print("Error loading image", e)
@@ -72,6 +76,9 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 
     for projectile in projectiles:
         pygame.draw.rect(WIN, "red", projectile)
+
+    for projectile in boss_projectiles:
+        projectile.draw(WIN)    
     
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")
     WIN.blit(time_text, (10, 10))
@@ -116,7 +123,7 @@ def main():
         bullets.update()
 
         time_thresholds = [
-            (10, 1500),
+            (10, 500000),
             (20, 1200),
             (30, 900),
             (40, 600),
@@ -124,7 +131,7 @@ def main():
             (60, 200),
             (70, 150),
             (80, 100),
-            (90, 50),
+            (90, 75),
             (100, 5000)
         ]
 
@@ -139,25 +146,31 @@ def main():
                 else:
                     break
         
-        if elapsed_time >= 105 and not boss_fight:
-            boss = Boss(WIDTH // 2, 50, "./sprites/boss1.png", projectiles)
+        if elapsed_time >= 5 and not boss_fight:
+            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss_projectiles, HEIGHT) 
+            #boss = Boss(WIDTH // 2, 50, "./sprites/boss1.png", projectiles)
             boss_fight = True
 
-          
-
         if boss_fight:
-            boss.attack_timer += clock.tick(100)
+            delta_time = clock.tick(144)
+            boss.update()
+            boss.draw(WIN)
+
+        if boss and not boss.moving_in:
+            boss.attack_timer += delta_time
             
             if boss.attack_timer > boss.attack_interval:
                     boss.attack(player)
+                    boss.attack_timer = 0
 
             player_hit = boss.move_projectiles(PROJECTILE_VELOCITY, player)
             if player_hit:
                 hit = True        
-
-            for bullet in bullets[:]:
-                if bullet.colliderect(boss.hitbox):
+            
+            for bullet in bullets:
+                if bullet.rect.colliderect(boss.hitbox):
                     bullets.remove(bullet)
+                    bullet.kill()
                     print("Bullet hit boss")
                     if boss.take_damage(10):
                         print("Boss defeated")
@@ -170,7 +183,8 @@ def main():
 
         if game_won and all(enemy.y > HEIGHT for enemy in enemies): 
                 WIN.blit(BG, (0, 0)) 
-                WIN.blit(playerShip, (player.x, player.y))     
+                WIN.blit(player.image, player.rect)
+                #WIN.blit(playerShip, (player.x, player.y))     
                 WIN.blit(win_text, (WIDTH/2 - win_text.get_width()/2, HEIGHT/2 - win_text.get_height()/2))
                 pygame.display.update()
                 pygame.time.delay(4000)     
@@ -180,7 +194,6 @@ def main():
             enemy.move()
             enemy.shoot()
  
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -197,12 +210,6 @@ def main():
             spacebar_held = False
             can_shoot = True        
 
-        # for bullet_tuple in bullets[:]:
-        #     bullet_rect, _ = bullet_tuple
-        #     bullet_rect.y -= BULLET_VELOCITY
-        #     if bullet_rect.y < 0:
-        #         bullets.remove(bullet_tuple)
-
         for bullet in bullets: 
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
@@ -216,7 +223,7 @@ def main():
                 projectiles.remove(projectile)
             elif projectile.colliderect(player):
                 projectiles.remove(projectile)
-                hit = True
+                hit = False
                 break    
         
         if hit:
@@ -231,6 +238,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
