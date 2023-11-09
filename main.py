@@ -69,8 +69,6 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 
     for bullet in bullets:
         bullet.draw(WIN)
-        #bullet_rect, bullet_image = bullet_tuple
-        #WIN.blit(bullet_image, bullet_rect.topleft)
         pygame.draw.rect(WIN, "green", bullet, 2) 
     
 
@@ -86,7 +84,6 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     fps_text = FONT.render(f"FPS: {int(fps)}", 1, (255, 255, 255))
     WIN.blit(fps_text, (10,  750))
     
-
     pygame.display.update()
     
 
@@ -99,15 +96,13 @@ def main():
     elapsed_time = 0
     global bullet_image
 
-    enemy_spawn_increment = 1500
+    enemy_spawn_increment = 5000
     enemy_count = 0
 
     boss_fight = False
     boss_defeated = False
     boss = None
 
-    
-    
     hit = False
     spacebar_held = False
     can_shoot = True
@@ -181,10 +176,11 @@ def main():
             if boss_defeated:
                 game_won = True
 
-        if game_won and all(enemy.y > HEIGHT for enemy in enemies): 
+        if game_won:
+                for enemy in enemies[:]:
+                    enemies.remove(enemy)
                 WIN.blit(BG, (0, 0)) 
-                WIN.blit(player.image, player.rect)
-                #WIN.blit(playerShip, (player.x, player.y))     
+                WIN.blit(player.image, player.rect)  
                 WIN.blit(win_text, (WIDTH/2 - win_text.get_width()/2, HEIGHT/2 - win_text.get_height()/2))
                 pygame.display.update()
                 pygame.time.delay(4000)     
