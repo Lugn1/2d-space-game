@@ -16,7 +16,7 @@ PLAYER_VELOCITY = 3
 BULLET_VELOCITY = 5
 BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
-bullets = []
+bullets = pygame.sprite.Group()
 
 ENEMY_VELOCITY = 1
 ENEMY1_WIDTH = 45
@@ -63,10 +63,11 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
 
-    for bullet_tuple in bullets:
-        bullet_rect, bullet_image = bullet_tuple
-        WIN.blit(bullet_image, bullet_rect.topleft)
-        pygame.draw.rect(WIN, "green", bullet_rect, 2) 
+    for bullet in bullets:
+        bullet.draw(WIN)
+        #bullet_rect, bullet_image = bullet_tuple
+        #WIN.blit(bullet_image, bullet_rect.topleft)
+        pygame.draw.rect(WIN, "green", bullet, 2) 
     
 
     for projectile in projectiles:
@@ -85,18 +86,20 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 def main():
     run = True
 
-    player = Player(WIDTH/2 - 40, HEIGHT/2, playerShip, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_VELOCITY, HEIGHT, WIDTH, BULLET_WIDTH, BULLET_HEIGHT)
+    player = Player(WIDTH/2 - 40, HEIGHT/2, playerShip, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_VELOCITY, HEIGHT, WIDTH, BULLET_VELOCITY, BULLET_WIDTH, BULLET_HEIGHT)
     clock = pygame.time.Clock()
     start_time = time.time()
     elapsed_time = 0
     global bullet_image
-    
+
     enemy_spawn_increment = 1500
     enemy_count = 0
 
     boss_fight = False
     boss_defeated = False
     boss = None
+
+    
     
     hit = False
     spacebar_held = False
@@ -110,6 +113,7 @@ def main():
         enemy_count += clock.tick(144)
         elapsed_time = time.time() - start_time
         fps = clock.get_fps()
+        bullets.update()
 
         time_thresholds = [
             (10, 1500),
@@ -193,18 +197,17 @@ def main():
             spacebar_held = False
             can_shoot = True        
 
-        for bullet_tuple in bullets[:]:
-            bullet_rect, _ = bullet_tuple
-            bullet_rect.y -= BULLET_VELOCITY
-            if bullet_rect.y < 0:
-                bullets.remove(bullet_tuple)
+        # for bullet_tuple in bullets[:]:
+        #     bullet_rect, _ = bullet_tuple
+        #     bullet_rect.y -= BULLET_VELOCITY
+        #     if bullet_rect.y < 0:
+        #         bullets.remove(bullet_tuple)
 
-        for bullet_tuple in bullets[:]:
-            bullet_rect, bullet_image = bullet_tuple    
+        for bullet in bullets: 
             for enemy in enemies[:]:
-                if bullet_rect.colliderect(enemy.rect):
+                if bullet.rect.colliderect(enemy.rect):
                     enemies.remove(enemy)
-                    bullets.remove(bullet_tuple)
+                    bullet.kill()
                     break
 
         for projectile in projectiles[:]:

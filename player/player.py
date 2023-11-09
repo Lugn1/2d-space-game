@@ -1,7 +1,8 @@
 import pygame
+from projectiles.bullet import Bullet
 
 class Player:
-    def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_width, bullet_height):
+    def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_velocity, bullet_width, bullet_height):
         self.image = image
         self.rect = self.image.get_rect(topleft=(x, y))
         self.width = width
@@ -9,6 +10,7 @@ class Player:
         self.velocity = velocity
         self.screen_height = screen_height
         self.screen_width = screen_width
+        self.bullet_velocity = bullet_velocity
         self.bullet_height = bullet_height
         self.bullet_width = bullet_width
         self.bullet_cooldown = 500
@@ -25,18 +27,13 @@ class Player:
         if (keys[pygame.K_s] or keys[pygame.K_DOWN]):
             self.rect.y = min(self.screen_height - self.height, self.rect.y + self.velocity) 
 
-    def shoot(self, bullets, bullet_image):
+    def shoot(self, bullet_group, bullet_image):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot > self.bullet_cooldown:
-            left_offset = 20
-            top_offset = 20
-            print(bullet_image.get_size())
-            bullet = pygame.Rect(
-                self.rect.centerx - (self.bullet_width // 2) - left_offset, 
-                self.rect.top - (self.bullet_height // 2) - top_offset,
-                self.bullet_width, self.bullet_height
-                )
-            bullets.append((bullet, bullet_image))
+            bullet_pos = self.rect.midtop
+            bullet_velocity = self.bullet_velocity
+            bullet = Bullet(bullet_pos, bullet_image, bullet_velocity)
+            bullet_group.add(bullet)
             self.last_shot = current_time
 
 
