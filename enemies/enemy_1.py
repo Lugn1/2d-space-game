@@ -23,7 +23,7 @@ class Enemy:
         self.rect.y = self.y
 
     def shoot(self):
-        if self.shoot_count == 60:
+        if self.shoot_count == 200:
             projectile_x = self.x + ENEMY_WIDTH / 2 - PROJECTILE_WIDTH / 2
             projectile_y = self.y + 20
             projectile = pygame.Rect(projectile_x, projectile_y, PROJECTILE_WIDTH, PROJECTILE_HEIGHT)
