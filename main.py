@@ -7,7 +7,7 @@ from player.player import Player
 
 pygame.font.init()
 
-WIDTH, HEIGHT = 1920, 1080
+WIDTH, HEIGHT = 1200, 800
 
 clock = pygame.time.Clock()
 
@@ -30,7 +30,6 @@ PROJECTILE_HEIGHT = 12
 PROJECTILE_VELOCITY = 1.5
 projectiles = []
 boss_projectiles = pygame.sprite.Group()
-
 
 
 
@@ -71,7 +70,6 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
         bullet.draw(WIN)
         pygame.draw.rect(WIN, "green", bullet, 2) 
     
-
     for projectile in projectiles:
         pygame.draw.rect(WIN, "red", projectile)
 
@@ -108,11 +106,13 @@ def main():
     can_shoot = True
     game_won = False
 
+
     lost_text = FONT.render("Game Over!", 1, "white")
     win_text = FONT.render("YOU WON!", 1, "white")
 
     while run:
-        enemy_count += clock.tick(144)
+        TIMER = clock.tick(144)
+        enemy_count += TIMER
         elapsed_time = time.time() - start_time
         fps = clock.get_fps()
         bullets.update()
@@ -147,12 +147,12 @@ def main():
             boss_fight = True
 
         if boss_fight:
-            delta_time = clock.tick(144)
+            #delta_time = clock.tick(120)
             boss.update()
             boss.draw(WIN)
 
         if boss and not boss.moving_in:
-            boss.attack_timer += delta_time
+            boss.attack_timer += TIMER
             
             if boss.attack_timer > boss.attack_interval:
                     boss.attack(player)
@@ -197,7 +197,7 @@ def main():
 
         keys = pygame.key.get_pressed()
         player.move(keys)
-        if (keys[pygame.K_SPACE]):
+        if (keys[pygame.K_SPACE] or keys[pygame.K_KP0]):
             if not spacebar_held and can_shoot:
                 player.shoot(bullets, bullet_image) 
                 can_shoot = False
