@@ -1,4 +1,9 @@
 import pygame
+from projectiles.projectile import Projectile
+
+pygame.init()
+projectile_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSound.wav")
+
 
 ENEMY_WIDTH = 45
 ENEMY_HEIGHT = 30 
@@ -9,11 +14,12 @@ projectiles = []
 ENEMY_VELOCITY = 2
 
 class Enemy:
-    def __init__(self, x, y, img, projectiles, velocity):
+    def __init__(self, x, y, img, projectile_img, projectiles, velocity):
         self.x = x
         self.y = y
         self.img = img
         self.shoot_count = 0
+        self.projectile_img = projectile_img
         self.projectiles = projectiles
         self.velocity = velocity
         self.rect = pygame.Rect(self.x, self.y, ENEMY_WIDTH, ENEMY_HEIGHT)
@@ -24,9 +30,9 @@ class Enemy:
 
     def shoot(self):
         if self.shoot_count == 200:
-            projectile_x = self.x + ENEMY_WIDTH / 2 - PROJECTILE_WIDTH / 2
-            projectile_y = self.y + 20
-            projectile = pygame.Rect(projectile_x, projectile_y, PROJECTILE_WIDTH, PROJECTILE_HEIGHT)
+            #projectile_sound.play()
+            projectile_pos = self.rect.midtop
+            projectile = Projectile(projectile_pos, self.projectile_img, PROJECTILE_VELOCITY, 50) #pygame.Rect(projectile_x, projectile_y, PROJECTILE_WIDTH, PROJECTILE_HEIGHT)
             self.projectiles.append(projectile)
             self.shoot_count = 0
         self.shoot_count += 1    

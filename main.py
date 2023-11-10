@@ -1,13 +1,12 @@
 import pygame
 import time
 import random 
-from enemies.enemy_1 import Enemy
+from enemies.enemy1 import Enemy
 from bosses.boss1 import Boss
 from player.player import Player
 
 pygame.font.init()
 
-#pygame.init()
 
 WIDTH, HEIGHT = 1200, 800
 
@@ -45,13 +44,13 @@ try:
     BG = pygame.image.load("./img/lvl1bg.jpg")
     BG = pygame.transform.scale(BG, (WIDTH, HEIGHT))
     playerShip = pygame.image.load("./sprites/playerShip.png")
-    enemy1 = pygame.image.load("./sprites/enemy1.png")
-    enemy1 = pygame.transform.scale(enemy1, (ENEMY1_WIDTH, ENEMY1_HEIGHT))
+    enemy1_img = pygame.image.load("./sprites/enemy1.png")
+    enemy1_img = pygame.transform.scale(enemy1_img, (ENEMY1_WIDTH, ENEMY1_HEIGHT))
     player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
     bullet_image = pygame.transform.rotate(player_bullet_image, 90)
-    #enemy_bullet_image = pygame.image.load("./sprites/playerDefaultProjectile.png")
-
-    
+    enemy1_projectile_img = pygame.image.load("./sprites/enemy1_projectile.png")
+    enemy1_projectile_img = pygame.transform.rotate(enemy1_projectile_img, -90)
+    enemy1_projectile_img = pygame.transform.scale(enemy1_projectile_img, (70, 70))
 except Exception as e:
     print("Error loading image", e)
 
@@ -63,7 +62,7 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     
 
     for enemy in enemies:
-        WIN.blit(enemy1, (enemy.x, enemy.y))
+        WIN.blit(enemy1_img, (enemy.x, enemy.y))
         #pygame.draw.rect(WIN, "red", enemy, 2) 
     
     if boss:
@@ -75,7 +74,8 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
        # pygame.draw.rect(WIN, "green", bullet, 2) 
     
     for projectile in projectiles:
-        pygame.draw.rect(WIN, "red", projectile)
+        projectile.draw(WIN)
+        #pygame.draw.rect(WIN, "red", projectile)
 
     for projectile in boss_projectiles:
         projectile.draw(WIN)
@@ -107,8 +107,6 @@ def main():
     boss = None
     
     hit = False
-    spacebar_held = False
-    can_shoot = True
     game_won = False
 
 
@@ -137,7 +135,7 @@ def main():
 
         if not game_won and enemy_count > enemy_spawn_increment:
             enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
-            enemy = Enemy(enemy_x_position, -50, enemy1, projectiles, ENEMY_VELOCITY)
+            enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, ENEMY_VELOCITY)
             enemies.append(enemy)
             enemy_count = 0
             for time_threshold, spawn_increment in time_thresholds:
@@ -211,12 +209,12 @@ def main():
                     break
 
         for projectile in projectiles[:]:
-            projectile.y += PROJECTILE_VELOCITY
-            if projectile.y > HEIGHT:
+            projectile.update()
+            if projectile.rect.y > HEIGHT:
                 projectiles.remove(projectile)
-            elif projectile.colliderect(player):
+            elif projectile.rect.colliderect(player):
                 projectiles.remove(projectile)
-                hit = False
+                hit = False # TODO swap to true 
                 break    
         
         if hit:
