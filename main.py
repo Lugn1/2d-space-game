@@ -7,6 +7,8 @@ from player.player import Player
 
 pygame.font.init()
 
+#pygame.init()
+
 WIDTH, HEIGHT = 1200, 800
 
 clock = pygame.time.Clock()
@@ -47,6 +49,7 @@ try:
     enemy1 = pygame.transform.scale(enemy1, (ENEMY1_WIDTH, ENEMY1_HEIGHT))
     player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
     bullet_image = pygame.transform.rotate(player_bullet_image, 90)
+    #enemy_bullet_image = pygame.image.load("./sprites/playerDefaultProjectile.png")
 
     
 except Exception as e:
@@ -197,13 +200,7 @@ def main():
         keys = pygame.key.get_pressed()
         player.move(keys)
         if (keys[pygame.K_SPACE] or keys[pygame.K_KP0]):
-            if not spacebar_held and can_shoot:
-                player.shoot(bullets, bullet_image) 
-                can_shoot = False
-            spacebar_held = True
-        else:
-            spacebar_held = False
-            can_shoot = True        
+            player.shoot(bullets, bullet_image)       
 
         for bullet in bullets: 
             for enemy in enemies[:]:

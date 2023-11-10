@@ -7,14 +7,14 @@ class Bullet(pygame.sprite.Sprite):
         self.velocity = velocity
         hitbox_reduction = hitbox_reduction
 
-        # Initialize rect with the center position
+    
         self.rect = self.image.get_rect(center=pos)
 
         # Dynamically adjust the rect size for the hitbox
-        hitbox_width = max(self.rect.width - hitbox_reduction, 1)  # Ensure it doesn't go below 1
+        hitbox_width = max(self.rect.width - hitbox_reduction, 1)  
         hitbox_height = max(self.rect.height - hitbox_reduction, 1)
         self.rect.size = (hitbox_width, hitbox_height)
-        self.rect.center = pos  # Re-center the rect
+        self.rect.center = pos  
 
     def update(self):
         self.rect.y -= self.velocity
@@ -22,7 +22,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
     def draw(self, window):
-        # Calculate the position to draw the image so it's centered in the hitbox
+        
         image_x = self.rect.centerx - self.image.get_width() // 2
         image_y = self.rect.centery - self.image.get_height() // 2
 

@@ -1,6 +1,8 @@
 import pygame
 from projectiles.bullet import Bullet
 
+pygame.init()
+bullet_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSound.wav")
 class Player:
     def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_velocity, bullet_width, bullet_height):
         self.image = image
@@ -30,6 +32,7 @@ class Player:
     def shoot(self, bullet_group, bullet_image):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot > self.bullet_cooldown:
+            bullet_sound.play()
             bullet_pos = self.rect.midtop
             bullet_velocity = self.bullet_velocity
             # Send bullet hitbox size as an argument to match the hitbox for later when 
