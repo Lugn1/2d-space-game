@@ -15,7 +15,7 @@ PLAYER_WIDTH = 45
 PLAYER_HEIGHT = 30
 PLAYER_VELOCITY = 3
 
-BULLET_VELOCITY = 1
+BULLET_VELOCITY = 5
 BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
 bullets = pygame.sprite.Group()
@@ -34,7 +34,7 @@ boss_projectiles = pygame.sprite.Group()
 
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Space Dodge")
+pygame.display.set_caption("Space game")
 
 FONT = pygame.font.SysFont("comicsans", 30)
 
@@ -53,29 +53,30 @@ except Exception as e:
     print("Error loading image", e)
 
 def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
-    
+
     WIN.blit(BG, (0, 0))
     WIN.blit(player.image, player.rect)
-    pygame.draw.rect(WIN, "red", player, 2) 
+    #pygame.draw.rect(WIN, "red", player, 2) 
     
 
     for enemy in enemies:
         WIN.blit(enemy1, (enemy.x, enemy.y))
-        pygame.draw.rect(WIN, "red", enemy, 2) 
+        #pygame.draw.rect(WIN, "red", enemy, 2) 
     
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
-        pygame.draw.rect(WIN, "red", boss, 2) 
-        
+        #pygame.draw.rect(WIN, "red", boss, 2) 
+
     for bullet in bullets:
         bullet.draw(WIN)
-        pygame.draw.rect(WIN, "green", bullet, 2) 
+       # pygame.draw.rect(WIN, "green", bullet, 2) 
     
     for projectile in projectiles:
         pygame.draw.rect(WIN, "red", projectile)
 
     for projectile in boss_projectiles:
-        projectile.draw(WIN)    
+        projectile.draw(WIN)
+
     
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")
     WIN.blit(time_text, (10, 10))
@@ -112,7 +113,6 @@ def main():
     win_text = FONT.render("YOU WON!", 1, "white")
 
     while run:
-        
         TIMER = clock.tick(144)
         enemy_count += TIMER
         elapsed_time = time.time() - start_time
@@ -120,7 +120,7 @@ def main():
         bullets.update()
 
         time_thresholds = [
-            (10, 500000),
+            (10, 1350),
             (20, 1200),
             (30, 900),
             (40, 600),
@@ -129,7 +129,7 @@ def main():
             (70, 150),
             (80, 100),
             (90, 75),
-            (100, 5000)
+            (100, 500000)
         ]
 
         if not game_won and enemy_count > enemy_spawn_increment:
@@ -143,13 +143,14 @@ def main():
                 else:
                     break
         
-        if elapsed_time >= 5 and not boss_fight:
+        if elapsed_time >= 100 and not boss_fight:
             boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss_projectiles, HEIGHT) 
             boss_fight = True
 
         if boss_fight:
             boss.update()
             boss.draw(WIN)
+    
 
         if boss and not boss.moving_in:
             boss.attack_timer += TIMER
@@ -163,14 +164,8 @@ def main():
             
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
-                    print("---")
-                    print(len(bullets))
-                    print("---")
                     bullet.kill()
-
                     print("Bullet hit boss")
-                    print("---")
-                    print(len(bullets))
                     if boss.take_damage(10):
                         print("Boss defeated")
                         boss_defeated = True
@@ -232,7 +227,6 @@ def main():
             pygame.display.update()
             pygame.time.delay(4000)
             break
-
 
         draw(player, elapsed_time, projectiles, enemies, boss=boss, fps=fps)    
 

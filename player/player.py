@@ -32,7 +32,9 @@ class Player:
         if current_time - self.last_shot > self.bullet_cooldown:
             bullet_pos = self.rect.midtop
             bullet_velocity = self.bullet_velocity
-            bullet = Bullet(bullet_pos, bullet_image, bullet_velocity)
+            # Send bullet hitbox size as an argument to match the hitbox for later when 
+            # multiple bullets are being used
+            bullet = Bullet(bullet_pos, bullet_image, bullet_velocity, 90)
             bullet_group.add(bullet)
             self.last_shot = current_time
 
