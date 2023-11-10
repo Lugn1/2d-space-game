@@ -15,7 +15,7 @@ PLAYER_WIDTH = 45
 PLAYER_HEIGHT = 30
 PLAYER_VELOCITY = 3
 
-BULLET_VELOCITY = 5
+BULLET_VELOCITY = 1
 BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
 bullets = pygame.sprite.Group()
@@ -53,7 +53,7 @@ except Exception as e:
     print("Error loading image", e)
 
 def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
-
+    
     WIN.blit(BG, (0, 0))
     WIN.blit(player.image, player.rect)
     pygame.draw.rect(WIN, "red", player, 2) 
@@ -65,7 +65,8 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
-
+        pygame.draw.rect(WIN, "red", boss, 2) 
+        
     for bullet in bullets:
         bullet.draw(WIN)
         pygame.draw.rect(WIN, "green", bullet, 2) 
@@ -100,7 +101,7 @@ def main():
     boss_fight = False
     boss_defeated = False
     boss = None
-
+    
     hit = False
     spacebar_held = False
     can_shoot = True
@@ -111,6 +112,7 @@ def main():
     win_text = FONT.render("YOU WON!", 1, "white")
 
     while run:
+        
         TIMER = clock.tick(144)
         enemy_count += TIMER
         elapsed_time = time.time() - start_time
@@ -143,11 +145,9 @@ def main():
         
         if elapsed_time >= 5 and not boss_fight:
             boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss_projectiles, HEIGHT) 
-            #boss = Boss(WIDTH // 2, 50, "./sprites/boss1.png", projectiles)
             boss_fight = True
 
         if boss_fight:
-            #delta_time = clock.tick(120)
             boss.update()
             boss.draw(WIN)
 
@@ -156,7 +156,6 @@ def main():
             
             if boss.attack_timer > boss.attack_interval:
                     boss.attack(player)
-                    boss.attack_timer = 0
 
             player_hit = boss.move_projectiles(PROJECTILE_VELOCITY, player)
             if player_hit:
@@ -164,9 +163,14 @@ def main():
             
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
-                    bullets.remove(bullet)
+                    print("---")
+                    print(len(bullets))
+                    print("---")
                     bullet.kill()
+
                     print("Bullet hit boss")
+                    print("---")
+                    print(len(bullets))
                     if boss.take_damage(10):
                         print("Boss defeated")
                         boss_defeated = True
@@ -209,6 +213,7 @@ def main():
         for bullet in bullets: 
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
+                    print("ENEMY HIT")
                     enemies.remove(enemy)
                     bullet.kill()
                     break
@@ -227,6 +232,7 @@ def main():
             pygame.display.update()
             pygame.time.delay(4000)
             break
+
 
         draw(player, elapsed_time, projectiles, enemies, boss=boss, fps=fps)    
 

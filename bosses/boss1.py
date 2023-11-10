@@ -28,6 +28,10 @@ class Boss:
             self.attack_timer = 0
 
     def update(self):
+
+        self.hitbox.x = self.rect.x
+        self.hitbox.y = self.rect.y
+
         if self.moving_in:
             self.rect.y += 1
             if self.rect.y >= 100:

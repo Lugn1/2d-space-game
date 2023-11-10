@@ -12,6 +12,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y -= self.velocity
         if self.rect.bottom < 0:
             self.kill()
+            print("Bullet killed in bullet.update")
 
 
     def draw(self, window):
