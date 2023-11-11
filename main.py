@@ -44,18 +44,27 @@ FONT = pygame.font.SysFont("comicsans", 30)
 
 
 try:
+    # backgrounds
     BG = pygame.image.load("./img/lvl1bg.jpg")
     BG = pygame.transform.scale(BG, (WIDTH, HEIGHT))
+    # ships
     playerShip = pygame.image.load("./sprites/playerShip.png")
     enemy1_img = pygame.image.load("./sprites/enemy1.png")
     enemy1_img = pygame.transform.scale(enemy1_img, (ENEMY1_WIDTH, ENEMY1_HEIGHT))
     player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
+    # player bullets
     bullet_image = pygame.transform.rotate(player_bullet_image, 90)
+    # enemy projectiles
     enemy1_projectile_img = pygame.image.load("./sprites/enemy1_projectile.png")
     enemy1_projectile_img = pygame.transform.rotate(enemy1_projectile_img, -90)
-    boss1_projectile_img = enemy1_projectile_img #pygame.transform.scale(enemy1_projectile_img, (20, 20))
+    boss1_projectile_img = enemy1_projectile_img 
     enemy1_projectile_img = pygame.transform.scale(enemy1_projectile_img, (70, 70))
-    
+    # player lives
+    full_heart_img = pygame.image.load("./img/fullHeart.png")
+    full_heart = pygame.transform.scale(full_heart_img, (50, 40))
+    empty_heart_img = pygame.image.load("./img/emptyHeart.png")
+    full_heart = pygame.transform.scale(full_heart_img, (50, 40))
+    empty_heart = pygame.transform.scale(empty_heart_img, (50, 40))
     
 except Exception as e:
     print("Error loading image", e)
@@ -96,8 +105,9 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     fps_text = fps_small_font.render(f"{int(fps)}", 1, (255, 255, 255))
     WIN.blit(fps_text, (WIDTH - 40,  HEIGHT - 25))
 
-    hearts = FONT.render(f"LIV", 1, (255, 255, 255))
-    WIN.blit(hearts, (10, 750))
+    #hearts = FONT.render(f"LIV", 1, (255, 255, 255))
+    WIN.blit(empty_heart, (20, 600))
+    WIN.blit(full_heart, (20, 700))
     
     pygame.display.update()
     
