@@ -63,18 +63,26 @@ try:
     full_heart_img = pygame.image.load("./img/fullHeart.png")
     full_heart = pygame.transform.scale(full_heart_img, (50, 40))
     empty_heart_img = pygame.image.load("./img/emptyHeart.png")
-    full_heart = pygame.transform.scale(full_heart_img, (50, 40))
-    empty_heart = pygame.transform.scale(empty_heart_img, (50, 40))
+    full_heart = pygame.transform.scale(full_heart_img, (40, 30))
+    empty_heart = pygame.transform.scale(empty_heart_img, (40, 30))
     
 except Exception as e:
     print("Error loading image", e)
 
-def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 
+def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
+    for i in range(player.lives):
+        heart_img = full_heart if i < player.current_hp else empty_heart
+        WIN.blit(heart_img, (start_x, start_y - i * 25))
+
+def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     WIN.blit(BG, (0, 0))
-    WIN.blit(player.image, player.rect)
+    draw_hearts(player, full_heart, empty_heart, WIDTH - WIDTH + 10, HEIGHT - 70)
+  
     #pygame.draw.rect(WIN, "red", player, 2) 
+
     
+    WIN.blit(player.image, player.rect)
     player.draw_dash_tracker(WIN)
 
     for enemy in enemies:
@@ -106,10 +114,15 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     WIN.blit(fps_text, (WIDTH - 40,  HEIGHT - 25))
 
     #hearts = FONT.render(f"LIV", 1, (255, 255, 255))
-    WIN.blit(empty_heart, (20, 600))
-    WIN.blit(full_heart, (20, 700))
+    #WIN.blit(empty_heart, (20, 600))
+    #WIN.blit(full_heart, (20, 700))
     
+   
+
+
     pygame.display.update()
+
+
     
 
 def main():
@@ -245,11 +258,11 @@ def main():
                 break    
         
         if game_over:
-            game_over_mocking_laugh.play()
-            WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
-            pygame.display.update()
-            pygame.time.delay(4000)
-            break
+             game_over_mocking_laugh.play()
+             WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
+             pygame.display.update()
+             pygame.time.delay(4000)
+             break
 
         draw(player, elapsed_time, projectiles, enemies, boss=boss, fps=fps)    
 

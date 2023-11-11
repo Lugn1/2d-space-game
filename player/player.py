@@ -8,7 +8,7 @@ class Player:
         self.image = image
         self.rect = self.image.get_rect(topleft=(x, y))
         # TODO add lives to parameter later
-        self.lives = 3
+        self.lives = 10
         self.current_hp = self.lives
         self.width = width
         self.height = height
