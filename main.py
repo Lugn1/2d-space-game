@@ -72,6 +72,7 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
         #pygame.draw.rect(WIN, "red", boss, 2) 
+        boss.draw_health_bar(WIN)
 
     for bullet in bullets:
         bullet.draw(WIN)
@@ -88,8 +89,12 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")
     WIN.blit(time_text, (10, 10))
 
-    fps_text = FONT.render(f"FPS: {int(fps)}", 1, (255, 255, 255))
-    WIN.blit(fps_text, (10,  750))
+    fps_small_font = pygame.font.Font(None, 32)
+    fps_text = fps_small_font.render(f"{int(fps)}", 1, (255, 255, 255))
+    WIN.blit(fps_text, (WIDTH - 40,  HEIGHT - 25))
+
+    hearts = FONT.render(f"LIV", 1, (255, 255, 255))
+    WIN.blit(hearts, (10, 750))
     
     pygame.display.update()
     
@@ -151,7 +156,8 @@ def main():
         if elapsed_time >= 5 and not boss_fight:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
             horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
-            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss1_projectile_img, boss_projectiles, HEIGHT, boss_projectile_velocity, horizontal_movement) 
+            boss_health = 100
+            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss1_projectile_img, boss_projectiles, WIDTH, HEIGHT, boss_projectile_velocity, horizontal_movement, boss_health) 
             boss_fight = True
 
         if boss_fight:
@@ -161,6 +167,7 @@ def main():
 
         if boss and not boss.moving_in:
             boss.attack_timer += TIMER
+            
             
             if boss.attack_timer > boss.attack_interval:
                     boss.attack(player)
@@ -173,7 +180,7 @@ def main():
                 if bullet.rect.colliderect(boss.hitbox):
                     bullet.kill()
                     print("Bullet hit boss")
-                    if boss.take_damage(10):
+                    if boss.take_damage(5):
                         print("Boss defeated")
                         boss_defeated = True
                         boss_fight = False
