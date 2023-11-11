@@ -18,11 +18,17 @@ class Player:
         self.bullet_cooldown = 500
         self.last_shot = pygame.time.get_ticks()
         # add dash
-        self.dash_velocity = self.velocity * 3
+        self.dash_velocity = self.velocity * 4
         self.dash_duration = 10
         self.dash_cooldown = 400
         self.is_dashing = False
         self.dash_timer = 0
+        # dash tracker for visual
+        self.dash_tracker_width = self.width
+        self.dash_tracker_height = 5
+        self.dash_tracker_x = 20
+        self.dash_tracker_y = self.screen_height - 30
+        self.dash_tracker_color = (40, 200, 255)
 
 
     def move(self, keys):
@@ -73,3 +79,13 @@ class Player:
 
     def draw(self, window):
         window.blit(self.image, self.rect)           
+
+
+    def draw_dash_tracker(self, screen):
+
+        tracker_x = self.rect.x + self.width / 2 - self.dash_tracker_width / 2
+        tracker_y = self.rect.y + self.height + 5
+
+        if self.dash_timer < 0:
+            filled_width = max(0, (self.dash_cooldown + self.dash_timer) / self.dash_cooldown * self.dash_tracker_width)  
+            pygame.draw.rect(screen, self.dash_tracker_color, (tracker_x, tracker_y, filled_width, self.dash_tracker_height)) 

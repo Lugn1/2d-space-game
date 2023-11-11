@@ -64,6 +64,7 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     WIN.blit(player.image, player.rect)
     #pygame.draw.rect(WIN, "red", player, 2) 
     
+    player.draw_dash_tracker(WIN)
 
     for enemy in enemies:
         WIN.blit(enemy1_img, (enemy.x, enemy.y))
@@ -164,7 +165,6 @@ def main():
             boss.update()
             boss.draw(WIN)
     
-
         if boss and not boss.moving_in:
             boss.attack_timer += TIMER
             

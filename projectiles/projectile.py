@@ -22,9 +22,9 @@ class Projectile(pygame.sprite.Sprite):
     def draw(self, win):
           
         image_x = self.rect.centerx - self.image.get_width() // 2
-        image_y = self.rect.centery - self.image.get_height() // 2 
+        image_y = self.rect.centery - self.image.get_height() // 2 + 2
         
         win.blit(self.image, (image_x, image_y)) 
 
         # Draw the hitbox for debugging
-        #pygame.draw.rect(win, (0, 255, 0), self.rect, 1)
+        pygame.draw.rect(win, (0, 255, 0), self.rect, 1)
