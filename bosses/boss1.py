@@ -83,6 +83,9 @@ class Boss:
         # draw current health
         pygame.draw.rect(screen, self.health_bar_color, [self.health_bar_x, self.health_bar_y, current_bar_width, self.health_bar_height])
 
+        # Draw the hitbox for debugging
+        #pygame.draw.rect(screen, (0, 255, 0), self.rect, 1)
+
     # def move(self):
     #     self.x += self.velocity
 

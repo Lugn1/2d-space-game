@@ -7,6 +7,7 @@ from player.player import Player
 from movement_patterns.horizontal_movement import HorizontalMovementPattern
 
 pygame.font.init()
+pygame.mixer.init()
 
 
 WIDTH, HEIGHT = 1200, 800
@@ -33,7 +34,8 @@ PROJECTILE_VELOCITY = 1.5
 projectiles = []
 boss_projectiles = pygame.sprite.Group()
 
-
+# sound_effects
+game_over_mocking_laugh = pygame.mixer.Sound("./sound_effects/mocking_laugh_1.wav")
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space game")
@@ -108,7 +110,6 @@ def main():
     start_time = time.time()
     elapsed_time = 0
     global bullet_image
-
     enemy_spawn_increment = 5000
     enemy_count = 0
 
@@ -116,7 +117,7 @@ def main():
     boss_defeated = False
     boss = None
     
-    hit = False
+    game_over = False
     game_won = False
 
 
@@ -129,6 +130,7 @@ def main():
         elapsed_time = time.time() - start_time
         fps = clock.get_fps()
         bullets.update()
+        keys = pygame.key.get_pressed()
 
         time_thresholds = [
             (10, 1350),
@@ -167,15 +169,15 @@ def main():
     
         if boss and not boss.moving_in:
             boss.attack_timer += TIMER
-            
-            
             if boss.attack_timer > boss.attack_interval:
                     boss.attack(player)
 
-            player_hit = boss.move_projectiles(PROJECTILE_VELOCITY, player)
-            if player_hit:
-                hit = False # TODO change to true        
-            
+            if boss.move_projectiles(PROJECTILE_VELOCITY, player):
+                if player.is_hit(): 
+                    game_over = player.current_hp <= 0 #False # TODO change to true        
+                    if game_over:
+                        print("player killed by boss") 
+
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
                     bullet.kill()
@@ -208,7 +210,7 @@ def main():
                 run = False
                 break
 
-        keys = pygame.key.get_pressed()
+        
         player.move(keys)
         if (keys[pygame.K_SPACE] or keys[pygame.K_KP0]):
             player.shoot(bullets, bullet_image)       
@@ -227,10 +229,13 @@ def main():
                 projectiles.remove(projectile)
             elif projectile.rect.colliderect(player):
                 projectiles.remove(projectile)
-                hit = False # TODO swap to true 
+                if player.is_hit():
+                    print("player is dead")
+                    game_over = True # TODO swap to true 
                 break    
         
-        if hit:
+        if game_over:
+            game_over_mocking_laugh.play()
             WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
             pygame.display.update()
             pygame.time.delay(4000)

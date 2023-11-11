@@ -7,6 +7,9 @@ class Player:
     def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_velocity, bullet_width, bullet_height):
         self.image = image
         self.rect = self.image.get_rect(topleft=(x, y))
+        # TODO add lives to parameter later
+        self.lives = 3
+        self.current_hp = self.lives
         self.width = width
         self.height = height
         self.velocity = velocity
@@ -29,6 +32,8 @@ class Player:
         self.dash_tracker_x = 20
         self.dash_tracker_y = self.screen_height - 30
         self.dash_tracker_color = (40, 200, 255)
+        
+        
 
 
     def move(self, keys):
@@ -38,7 +43,6 @@ class Player:
             if not self.is_dashing and self.dash_timer == 0:
                 self.is_dashing = True
                 self.dash_timer = self.dash_duration
-
         # current speed bases on dash or not
         current_velocity = self.dash_velocity if self.is_dashing else self.velocity        
 
@@ -76,9 +80,17 @@ class Player:
             bullet_group.add(bullet)
             self.last_shot = current_time
 
+    def is_hit(self):
+        self.current_hp -= 1
+        print("player got hit, HP: ", self.current_hp)
+        return self.current_hp <= 0
+        
 
     def draw(self, window):
-        window.blit(self.image, self.rect)           
+        window.blit(self.image, self.rect)   
+
+        # Draw the hitbox for debugging
+        pygame.draw.rect(window, (0, 255, 0), self.rect, 1)        
 
 
     def draw_dash_tracker(self, screen):
