@@ -17,17 +17,46 @@ class Player:
         self.bullet_width = bullet_width
         self.bullet_cooldown = 500
         self.last_shot = pygame.time.get_ticks()
+        # add dash
+        self.dash_velocity = self.velocity * 3
+        self.dash_duration = 10
+        self.dash_cooldown = 400
+        self.is_dashing = False
+        self.dash_timer = 0
 
 
     def move(self, keys):
+
+        # add dash
+        if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
+            if not self.is_dashing and self.dash_timer == 0:
+                self.is_dashing = True
+                self.dash_timer = self.dash_duration
+
+        # current speed bases on dash or not
+        current_velocity = self.dash_velocity if self.is_dashing else self.velocity        
+
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]):
-            self.rect.x = max(0, self.rect.x - self.velocity)      
+            self.rect.x = max(0, self.rect.x - current_velocity)      
         if (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
-            self.rect.x = min(self.screen_width - self.width, self.rect.x + self.velocity)
+            self.rect.x = min(self.screen_width - self.width, self.rect.x + current_velocity)
         if (keys[pygame.K_w] or keys[pygame.K_UP]):
-            self.rect.y = max(0, self.rect.y - self.velocity) 
+            self.rect.y = max(0, self.rect.y - current_velocity) 
         if (keys[pygame.K_s] or keys[pygame.K_DOWN]):
-            self.rect.y = min(self.screen_height - self.height, self.rect.y + self.velocity) 
+            self.rect.y = min(self.screen_height - self.height, self.rect.y + current_velocity)
+        
+        # dash timer
+        if self.is_dashing:
+            self.dash_timer -= 1
+            if self.dash_timer <= 0:
+                self.is_dashing = False
+                # start cooldown
+                self.dash_timer = -self.dash_cooldown
+        
+        # cooldown recovery
+        if self.dash_timer < 0:
+            self.dash_timer += 1
+            print("Cooldown: ", self.dash_timer)
 
     def shoot(self, bullet_group, bullet_image):
         current_time = pygame.time.get_ticks()
