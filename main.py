@@ -4,6 +4,7 @@ import random
 from enemies.enemy1 import Enemy
 from bosses.boss1 import Boss
 from player.player import Player
+from movement_patterns.horizontal_movement import HorizontalMovementPattern
 
 pygame.font.init()
 
@@ -149,7 +150,8 @@ def main():
         
         if elapsed_time >= 5 and not boss_fight:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
-            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss1_projectile_img, boss_projectiles, HEIGHT, boss_projectile_velocity) 
+            horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
+            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss1_projectile_img, boss_projectiles, HEIGHT, boss_projectile_velocity, horizontal_movement) 
             boss_fight = True
 
         if boss_fight:

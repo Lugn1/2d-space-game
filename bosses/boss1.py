@@ -6,7 +6,7 @@ from projectiles.projectile import Projectile
 #PROJECTILE_VELOCITY = 1.5
 
 class Boss:
-    def __init__(self, x, y_offscreen, image_path, projectile_img, projectile_group, screen_height, projectile_velocity):
+    def __init__(self, x, y_offscreen, image_path, projectile_img, projectile_group, screen_height, projectile_velocity, movement_pattern):
         super().__init__()
         original_image = pygame.image.load(image_path)
         self.width, self.height = 120, 80
@@ -21,7 +21,7 @@ class Boss:
         self.screen_height = screen_height
         self.projectile_velocity = projectile_velocity
         self.moving_in = True
-        
+        self.movement_pattern = movement_pattern
 
     def attack(self, player):
         if not self.moving_in:
@@ -40,11 +40,12 @@ class Boss:
             if self.rect.y >= 100:
                 self.moving_in = False  
 
-        self.projectile_group.update()    
-
-        for projectile in self.projectile_group:
-            if projectile.rect.y > self.screen_height:
-                self.projectile_group.remove(projectile)          
+        if not self.moving_in:
+            self.projectile_group.update()    
+            self.movement_pattern.move(self)
+            for projectile in self.projectile_group:
+                if projectile.rect.y > self.screen_height:
+                    self.projectile_group.remove(projectile)          
 
     def move_projectiles(self, velocity, player):
         for projectile in self.projectile_group.copy():
