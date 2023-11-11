@@ -50,7 +50,10 @@ try:
     bullet_image = pygame.transform.rotate(player_bullet_image, 90)
     enemy1_projectile_img = pygame.image.load("./sprites/enemy1_projectile.png")
     enemy1_projectile_img = pygame.transform.rotate(enemy1_projectile_img, -90)
+    boss1_projectile_img = enemy1_projectile_img #pygame.transform.scale(enemy1_projectile_img, (20, 20))
     enemy1_projectile_img = pygame.transform.scale(enemy1_projectile_img, (70, 70))
+    
+    
 except Exception as e:
     print("Error loading image", e)
 
@@ -128,8 +131,8 @@ def main():
             (50, 300),
             (60, 200),
             (70, 150),
-            (80, 100),
-            (90, 75),
+            (80, 150),
+            (90, 150),
             (100, 500000)
         ]
 
@@ -144,8 +147,9 @@ def main():
                 else:
                     break
         
-        if elapsed_time >= 100 and not boss_fight:
-            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss_projectiles, HEIGHT) 
+        if elapsed_time >= 5 and not boss_fight:
+            boss_projectile_velocity = 0.5 # TODO this does not work properly
+            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss1_projectile_img, boss_projectiles, HEIGHT, boss_projectile_velocity) 
             boss_fight = True
 
         if boss_fight:
@@ -161,7 +165,7 @@ def main():
 
             player_hit = boss.move_projectiles(PROJECTILE_VELOCITY, player)
             if player_hit:
-                hit = True        
+                hit = False # TODO change to true        
             
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
