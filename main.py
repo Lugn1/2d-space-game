@@ -23,7 +23,7 @@ BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
 bullets = pygame.sprite.Group()
 
-ENEMY_VELOCITY = 1
+ENEMY_VELOCITY = 0.5
 ENEMY1_WIDTH = 45
 ENEMY1_HEIGHT = 30 
 enemies = []
@@ -113,19 +113,12 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
     fps_text = fps_small_font.render(f"{int(fps)}", 1, (255, 255, 255))
     WIN.blit(fps_text, (WIDTH - 40,  HEIGHT - 25))
 
-    #hearts = FONT.render(f"LIV", 1, (255, 255, 255))
-    #WIN.blit(empty_heart, (20, 600))
-    #WIN.blit(full_heart, (20, 700))
-    
-   
-
-
     pygame.display.update()
 
 
-    
 
-def main():
+def game_loop():
+
     run = True
 
     player = Player(WIDTH/2 - 40, HEIGHT/2, playerShip, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_VELOCITY, HEIGHT, WIDTH, BULLET_VELOCITY, BULLET_WIDTH, BULLET_HEIGHT)
@@ -145,7 +138,7 @@ def main():
 
 
     lost_text = FONT.render("Game Over!", 1, "white")
-    win_text = FONT.render("YOU WON!", 1, "white")
+    win_text = FONT.render("YOU WON!", 1, "white")    
 
     while run:
         TIMER = clock.tick(144)
@@ -156,15 +149,16 @@ def main():
         keys = pygame.key.get_pressed()
 
         time_thresholds = [
+            (0, 1500),
             (10, 1350),
             (20, 1200),
             (30, 900),
             (40, 600),
-            (50, 300),
-            (60, 200),
-            (70, 150),
-            (80, 150),
-            (90, 150),
+            (50, 400),
+            #(60, 200),
+            #(70, 150),
+            (80, 200),
+            #(90, 150),
             (100, 500000)
         ]
 
@@ -179,7 +173,7 @@ def main():
                 else:
                     break
         
-        if elapsed_time >= 5 and not boss_fight:
+        if elapsed_time >= 100 and not boss_fight:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
             horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
             boss_health = 100
@@ -197,7 +191,9 @@ def main():
 
             if boss.move_projectiles(PROJECTILE_VELOCITY, player):
                 if player.is_hit(): 
-                    game_over = player.current_hp <= 0 #False # TODO change to true        
+                    #TODO change to this  
+                    #game_over = player.current_hp <= 0 #False 
+                    game_over = False      
                     if game_over:
                         print("player killed by boss") 
 
@@ -233,7 +229,6 @@ def main():
                 run = False
                 break
 
-        
         player.move(keys)
         if (keys[pygame.K_SPACE] or keys[pygame.K_KP0]):
             player.shoot(bullets, bullet_image)       
@@ -254,7 +249,7 @@ def main():
                 projectiles.remove(projectile)
                 if player.is_hit():
                     print("player is dead")
-                    game_over = True # TODO swap to true 
+                    game_over = False # TODO swap to true 
                 break    
         
         if game_over:
@@ -266,10 +261,47 @@ def main():
 
         draw(player, elapsed_time, projectiles, enemies, boss=boss, fps=fps)    
 
+    main_menu(WIN)
+
+def main_menu(screen):
+    menu = True
+    clock = pygame.time.Clock()
+
+    while menu:
+        screen.fill((0, 0, 0,))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if event.type == pygame.KEYDOWN:    
+                if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    menu = False
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    return
+
+        font = pygame.font.SysFont("comicsans", 40)
+        title = font.render("Main Menu", True, (255, 255, 255))
+        screen.blit(title, (100, 100))
+
+        start_game = font.render("Press Enter to Start", True, (255, 255, 255))
+        screen.blit(start_game, (100, 200))
+
+        pygame.display.update()
+        clock.tick(144)
+
+def main():
+    pygame.init()
+    main_menu(WIN)
+    game_loop()
     pygame.quit()
 
 if __name__ == "__main__":
     main()
+
+
+
+
 
 
 
