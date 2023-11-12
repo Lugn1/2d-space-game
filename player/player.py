@@ -7,7 +7,6 @@ class Player:
     def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_velocity, bullet_width, bullet_height):
         self.image = image
         self.rect = self.image.get_rect(topleft=(x, y))
-        # TODO add lives to parameter later
         self.lives = 3
         self.current_hp = self.lives
         self.width = width
@@ -73,7 +72,7 @@ class Player:
         # cooldown recovery
         if self.dash_timer < 0:
             self.dash_timer += 1
-            print("Cooldown: ", self.dash_timer)
+            #print("Cooldown: ", self.dash_timer)
 
 
         

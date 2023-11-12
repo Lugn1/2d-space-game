@@ -20,8 +20,6 @@ BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
 
 ENEMY_VELOCITY = 0.5
-ENEMY1_WIDTH = 45
-ENEMY1_HEIGHT = 30 
 
 PROJECTILE_WIDTH = 6
 PROJECTILE_HEIGHT = 12
@@ -37,18 +35,29 @@ try:
     # backgrounds
     BG = pygame.image.load("./img/lvl1bg.jpg")
     BG = pygame.transform.scale(BG, (WIDTH, HEIGHT))
+
     # ships
     playerShip = pygame.image.load("./sprites/playerShip.png")
     enemy1_img = pygame.image.load("./sprites/enemy1.png")
-    enemy1_img = pygame.transform.scale(enemy1_img, (ENEMY1_WIDTH, ENEMY1_HEIGHT))
-    player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
+    enemy1_img = pygame.transform.scale(enemy1_img, (45, 30))
+    enemy2_img = pygame.image.load("./sprites/enemy2.png")
+    enemy2_img = pygame.transform.scale(enemy2_img, (45, 45))
+
     # player bullets
+    player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
     bullet_image = pygame.transform.rotate(player_bullet_image, 90)
+
     # enemy projectiles
     enemy1_projectile_img = pygame.image.load("./sprites/enemy1_projectile.png")
-    enemy1_projectile_img = pygame.transform.rotate(enemy1_projectile_img, -90)
-    boss1_projectile_img = enemy1_projectile_img 
     enemy1_projectile_img = pygame.transform.scale(enemy1_projectile_img, (70, 70))
+    enemy1_projectile_img = pygame.transform.rotate(enemy1_projectile_img, -90)
+
+    enemy2_projectile_img = pygame.image.load("./sprites/enemy2_projectile.png")
+    enemy2_projectile_img = pygame.transform.scale(enemy2_projectile_img, (80, 80))
+    enemy2_projectile_img = pygame.transform.rotate(enemy2_projectile_img, -90)
+
+    boss1_projectile_img = enemy1_projectile_img 
+
     # player lives
     full_heart_img = pygame.image.load("./img/fullHeart.png")
     full_heart = pygame.transform.scale(full_heart_img, (50, 40))
@@ -76,8 +85,11 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     player.draw_dash_tracker(WIN)
 
     for enemy in enemies:
-        WIN.blit(enemy1_img, (enemy.x, enemy.y))
-        #pygame.draw.rect(WIN, "red", enemy, 2) 
+        if enemy.type == 'enemy1':
+            WIN.blit(enemy1_img, (enemy.x, enemy.y))
+            #pygame.draw.rect(WIN, "red", enemy, 2)
+        elif enemy.type == 'enemy2':
+            WIN.blit(enemy2_img, (enemy.x, enemy.y)) 
     
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
@@ -154,7 +166,10 @@ def game_loop():
     start_time = time.time()
     elapsed_time = 0
     global bullet_image
-    enemy_spawn_increment = 5000
+    enemy_spawn_increment = 1500
+    enemy2_spawn_increment = 20000
+    enemy2_last_spawn_time = 0
+    
     enemy_count = 0
     boss_fight = False
     boss_defeated = False
@@ -184,15 +199,15 @@ def game_loop():
         time_thresholds = [
             (0, 1500),
             (10, 1350),
-            (20, 1200),
-            (30, 900),
-            (40, 600),
-            (50, 400),
-            #(60, 200),
-            #(70, 150),
-            (80, 200),
-            #(90, 150),
-            (100, 500000)
+            (20, 100),
+            (22, 1350),
+            (30, 1000),
+            (50, 40),
+            (51, 800),
+            (80, 30),
+            (81, 700),
+            (90, 30),
+            (91, 50000000)
         ]
 
             
@@ -208,10 +223,18 @@ def game_loop():
                         return game_loop()    
                     elif action == 'main_menu':
                         return main_menu(WIN)   
-
+                    
+        # spawn enemies
         if not game_won and enemy_count > enemy_spawn_increment:
+            #spawn enemy 2
+            if elapsed_time > 0 and elapsed_time < 80:
+                if(pygame.time.get_ticks() - enemy2_last_spawn_time) > enemy2_spawn_increment:
+                    enemy2_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
+                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, ENEMY_VELOCITY, 45, 45, "enemy2")
+                    enemies.append(enemy2)
+                    enemy2_last_spawn_time = pygame.time.get_ticks()
             enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
-            enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, ENEMY_VELOCITY)
+            enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, ENEMY_VELOCITY, 45, 30, "enemy1")
             enemies.append(enemy)
             enemy_count = 0
             for time_threshold, spawn_increment in time_thresholds:
@@ -219,8 +242,9 @@ def game_loop():
                     enemy_spawn_increment = spawn_increment
                 else:
                     break
-        
-        if elapsed_time >= 2 and not boss_fight:
+
+        # spawn boss
+        if elapsed_time >= 110 and not boss_fight:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
             horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
             boss_health = 100
@@ -359,11 +383,6 @@ def main():
                 running = False
         elif action == "quit":
             running = False    
-    # try:
-    #     if main_menu(WIN) == "start_game":
-    #         game_loop()
-    # finally:
-    #     pygame.quit()
     pygame.quit()
 
 if __name__ == "__main__":

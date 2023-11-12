@@ -7,7 +7,6 @@ class Bullet(pygame.sprite.Sprite):
         self.velocity = velocity
         hitbox_reduction = hitbox_reduction
 
-    
         self.rect = self.image.get_rect(center=pos)
 
         # Dynamically adjust the rect size for the hitbox

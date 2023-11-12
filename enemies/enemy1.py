@@ -1,20 +1,23 @@
 import pygame
 from projectiles.projectile import Projectile
 
+
 pygame.init()
-projectile_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSound.wav")
+# TODO change this to a enemy projectile sound
+default_projectile_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSound.wav")
 
 
-ENEMY_WIDTH = 45
-ENEMY_HEIGHT = 30 
-PROJECTILE_WIDTH = 6
-PROJECTILE_HEIGHT = 12
+#ENEMY_WIDTH = 45
+#ENEMY_HEIGHT = 30 
+#PROJECTILE_WIDTH = 6
+#PROJECTILE_HEIGHT = 12
 PROJECTILE_VELOCITY = 3
-projectiles = []
-ENEMY_VELOCITY = 2
+#projectiles = []
+#ENEMY_VELOCITY = 2
 
 class Enemy:
-    def __init__(self, x, y, img, projectile_img, projectiles, velocity):
+    # x, y, img, projectile_img, projectile_width, projectile_height, projectile_velocity, projectiles[], velocity, width, height TODO maybe change to this
+    def __init__(self, x, y, img, projectile_img, projectiles, velocity, width, height, type):
         self.x = x
         self.y = y
         self.img = img
@@ -22,7 +25,11 @@ class Enemy:
         self.projectile_img = projectile_img
         self.projectiles = projectiles
         self.velocity = velocity
-        self.rect = pygame.Rect(self.x, self.y, ENEMY_WIDTH, ENEMY_HEIGHT)
+        self.width = width
+        self.height = height
+        self.type = type
+        
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def move(self):
         self.y += self.velocity
