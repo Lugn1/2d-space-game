@@ -8,7 +8,7 @@ class Player:
         self.image = image
         self.rect = self.image.get_rect(topleft=(x, y))
         # TODO add lives to parameter later
-        self.lives = 10
+        self.lives = 3
         self.current_hp = self.lives
         self.width = width
         self.height = height
@@ -44,12 +44,19 @@ class Player:
                 self.is_dashing = True
                 self.dash_timer = self.dash_duration
         # current speed bases on dash or not
-        current_velocity = self.dash_velocity if self.is_dashing else self.velocity        
+        current_velocity = self.dash_velocity if self.is_dashing else self.velocity   
+
+        if self.rect.right < 0:
+            self.rect.left = self.screen_width
+        elif self.rect.left > self.screen_width:
+            self.rect.right = 0     
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]):
-            self.rect.x = max(0, self.rect.x - current_velocity)      
+            self.rect.x -= current_velocity
+            #self.rect.x = max(0, self.rect.x - current_velocity)      
         if (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
-            self.rect.x = min(self.screen_width - self.width, self.rect.x + current_velocity)
+            self.rect.x += current_velocity
+            #self.rect.x = min(self.screen_width - self.width, self.rect.x + current_velocity)
         if (keys[pygame.K_w] or keys[pygame.K_UP]):
             self.rect.y = max(0, self.rect.y - current_velocity) 
         if (keys[pygame.K_s] or keys[pygame.K_DOWN]):
@@ -67,6 +74,10 @@ class Player:
         if self.dash_timer < 0:
             self.dash_timer += 1
             print("Cooldown: ", self.dash_timer)
+
+
+        
+
 
     def shoot(self, bullet_group, bullet_image):
         current_time = pygame.time.get_ticks()
