@@ -112,7 +112,6 @@ def pause_menu(screen):
     pause_options = ["Resume", "Restart Level", "Back to Menu", "Quit"]
     pointer_pos = 0
     
-
     font = pygame.font.SysFont("comicsans", 40)
 
     while paused:
@@ -133,7 +132,9 @@ def pause_menu(screen):
                     elif pointer_pos == 2:
                         return 'main_menu'
                     elif pointer_pos == 3:
+                        pygame.quit()
                         return 'quit'
+                        
 
         screen.fill((0, 0, 0))
         for index, option in enumerate(pause_options):
@@ -202,7 +203,7 @@ def game_loop():
                 if event.key == pygame.K_ESCAPE:
                     action = pause_menu(WIN)
                     if action == 'quit':
-                        run = False
+                        return 'quit'
                     elif action == 'restart':
                         return game_loop()    
                     elif action == 'main_menu':
@@ -314,8 +315,7 @@ def main_menu(screen):
     
     while menu:
         screen.fill((0, 0, 0,))
-        #mouse_x, mouse_y = pygame.mouse.get_pos()
-        
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "quit"
@@ -334,30 +334,6 @@ def main_menu(screen):
                         print("Options")
                     elif pointer_pos == 2:
                         return "quit"    
-            # Mouse events
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            #     if event.button == 1:
-            #         for index, option in enumerate(menu_options):
-            #             text = font.render(option, True, (255, 255, 255))
-            #             text_rect = text.get_rect(center=(WIDTH / 2, 200 + 60 * index))
-            #             if text_rect.collidepoint((mouse_x, mouse_y)):
-            #                 if index == 0:
-            #                     return "start_game"
-            #                 elif index == 1:
-            #                     #return "options"
-            #                     print("options")
-            #                 elif index == 2:
-            #                     pygame.quit()
-            #                     return    
-        
-        # # check if mouse is hovering over any option                            
-        # for index, option in enumerate(menu_options):
-        #     text = font.render(option, True, (255, 255, 255))
-        #     text_rect = text.get_rect(center=(WIDTH / 2, 200 + 70 * index))
-        #     if text_rect.collidepoint((mouse_x, mouse_y)):
-        #         pointer_pos = index
-        #         break    
-        
         # render menu options
         for index, option in enumerate(menu_options):
             if index == pointer_pos:
@@ -365,8 +341,7 @@ def main_menu(screen):
                 screen.blit(label, (WIDTH / 2 - label.get_width() / 2, 200 + 60 * index))
             else:
                 label = font.render(option, True, (255, 255, 255))
-                screen.blit(label, (WIDTH / 2 - label.get_width() / 2, 200 + 60 * index))
-            #screen.blit(label, (100, 100 + 50 * index))                    
+                screen.blit(label, (WIDTH / 2 - label.get_width() / 2, 200 + 60 * index))                   
 
         pygame.display.update()
         clock.tick(144)
@@ -374,11 +349,22 @@ def main_menu(screen):
 def main():
     pygame.init()
     pygame.mouse.set_visible(False)
-    try:
-        if main_menu(WIN) == "start_game":
-            game_loop()
-    finally:
-        pygame.quit()
+    running = True
+
+    while running:
+        action = main_menu(WIN)
+        if action == "start_game":
+            result = game_loop()
+            if result == "quit":
+                running = False
+        elif action == "quit":
+            running = False    
+    # try:
+    #     if main_menu(WIN) == "start_game":
+    #         game_loop()
+    # finally:
+    #     pygame.quit()
+    pygame.quit()
 
 if __name__ == "__main__":
     main()
