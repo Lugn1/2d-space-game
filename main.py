@@ -115,12 +115,49 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 
     pygame.display.update()
 
+def pause_menu(screen):
+    paused = True
+    clock = pygame.time.Clock()
+    pause_options = ["Resume", "Restart Level", "Back to Menu", "Quit"]
+    pointer_pos = 0
 
+    font = pygame.font.SysFont("comicsans", 40)
+
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.QUIT()
+                return 'quit'
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                    pointer_pos = (pointer_pos + 1) % len(pause_options)
+                if event.key == pygame.K_w or event.key == pygame.K_UP:
+                    pointer_pos = (pointer_pos - 1) % len(pause_options)
+                if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    if pointer_pos == 0:
+                        return 'resume'
+                    elif pointer_pos == 1:
+                        return 'restart'
+                    elif pointer_pos == 2:
+                        return 'main_menu'
+                    elif pointer_pos == 3:
+                        pygame.quit()
+                        return 'quit'
+
+        screen.fill((0, 0, 0))
+        for index, option in enumerate(pause_options):
+            if index == pointer_pos:
+                label = font.render(f"> {option}", True, (255, 255, 255))
+            else:
+                label = font.render(option, True, (255, 255, 255))
+            screen.blit(label, (100, 100 + 50 * index))
+
+        pygame.display.update()
+        clock.tick(144)
 
 def game_loop():
-
     run = True
-
     player = Player(WIDTH/2 - 40, HEIGHT/2, playerShip, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_VELOCITY, HEIGHT, WIDTH, BULLET_VELOCITY, BULLET_WIDTH, BULLET_HEIGHT)
     clock = pygame.time.Clock()
     start_time = time.time()
@@ -128,15 +165,11 @@ def game_loop():
     global bullet_image
     enemy_spawn_increment = 5000
     enemy_count = 0
-
     boss_fight = False
     boss_defeated = False
     boss = None
-    
     game_over = False
     game_won = False
-
-
     lost_text = FONT.render("Game Over!", 1, "white")
     win_text = FONT.render("YOU WON!", 1, "white")    
 
@@ -161,6 +194,15 @@ def game_loop():
             #(90, 150),
             (100, 500000)
         ]
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    action = pause_menu(WIN)
+                    if action == 'quit':
+                        run = False
+                    elif action == 'main_menu':
+                        return    
 
         if not game_won and enemy_count > enemy_spawn_increment:
             enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
