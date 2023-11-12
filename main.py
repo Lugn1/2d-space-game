@@ -9,7 +9,6 @@ from movement_patterns.horizontal_movement import HorizontalMovementPattern
 pygame.font.init()
 pygame.mixer.init()
 
-
 WIDTH, HEIGHT = 1200, 800
 
 PLAYER_WIDTH = 45
@@ -195,7 +194,12 @@ def game_loop():
             (100, 500000)
         ]
 
+            
+
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.QUIT()
+                return 'quit'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     action = pause_menu(WIN)
@@ -204,7 +208,7 @@ def game_loop():
                     elif action == 'restart':
                         return game_loop()    
                     elif action == 'main_menu':
-                        return    
+                        return main_menu(WIN)   
 
         if not game_won and enemy_count > enemy_spawn_increment:
             enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
@@ -304,8 +308,9 @@ def game_loop():
              break
 
          
+    
+    pygame.quit()
 
-    main_menu(WIN)
 
 def main_menu(screen):
     menu = True
