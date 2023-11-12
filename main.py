@@ -117,7 +117,6 @@ def pause_menu(screen):
     while paused:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.QUIT()
                 return 'quit'
             
             if event.type == pygame.KEYDOWN:
@@ -133,7 +132,6 @@ def pause_menu(screen):
                     elif pointer_pos == 2:
                         return 'main_menu'
                     elif pointer_pos == 3:
-                        pygame.quit()
                         return 'quit'
 
         screen.fill((0, 0, 0))
@@ -195,10 +193,8 @@ def game_loop():
         ]
 
             
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.QUIT()
                 return 'quit'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -307,11 +303,6 @@ def game_loop():
              pygame.time.delay(4000)
              break
 
-         
-    
-    pygame.quit()
-
-
 def main_menu(screen):
     menu = True
     clock = pygame.time.Clock()
@@ -325,8 +316,7 @@ def main_menu(screen):
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                return
+                return "quit"
             # Keyboard events
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_s or event.key == pygame.K_DOWN:
@@ -335,12 +325,13 @@ def main_menu(screen):
                     pointer_pos = (pointer_pos - 1) % len(menu_options)
                 if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                     if pointer_pos == 0:
-                        menu = False
+                        return "start_game"
+                        #menu = False
                     elif pointer_pos == 1:
+                        #return "options"
                         print("Options")
                     elif pointer_pos == 2:
-                        pygame.quit()
-                        return    
+                        return "quit"    
             # Mouse events
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -349,8 +340,9 @@ def main_menu(screen):
                         text_rect = text.get_rect(center=(WIDTH / 2, 200 + 60 * index))
                         if text_rect.collidepoint((mouse_x, mouse_y)):
                             if index == 0:
-                                menu = False
+                                return "start_game"
                             elif index == 1:
+                                #return "options"
                                 print("options")
                             elif index == 2:
                                 pygame.quit()
@@ -379,9 +371,11 @@ def main_menu(screen):
 
 def main():
     pygame.init()
-    main_menu(WIN)
-    game_loop()
-    pygame.quit()
+    try:
+        if main_menu(WIN) == "start_game":
+            game_loop()
+    finally:
+        pygame.quit()
 
 if __name__ == "__main__":
     main()
