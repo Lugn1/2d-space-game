@@ -1,11 +1,11 @@
 import pygame
 import time
 import random 
-from enemies.enemy1 import Enemy
-from bosses.boss1 import Boss
+from enemies.enemy import Enemy
+from bosses.boss import Boss
 from player.player import Player
-from movement_patterns.horizontal_movement import HorizontalMovementPattern
-
+from movement_patterns.boss_patterns.horizontal_movement import HorizontalMovementPattern
+from movement_patterns.enemy_patterns.horizontal_movement import EnemyHorizontalMovementPattern
 pygame.font.init()
 pygame.mixer.init()
 
@@ -19,7 +19,7 @@ BULLET_VELOCITY = 5
 BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
 
-ENEMY_VELOCITY = 0.5
+#ENEMY_VELOCITY = 0.5
 
 PROJECTILE_WIDTH = 6
 PROJECTILE_HEIGHT = 12
@@ -85,11 +85,7 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     player.draw_dash_tracker(WIN)
 
     for enemy in enemies:
-        if enemy.type == 'enemy1':
-            WIN.blit(enemy1_img, (enemy.x, enemy.y))
-            #pygame.draw.rect(WIN, "red", enemy, 2)
-        elif enemy.type == 'enemy2':
-            WIN.blit(enemy2_img, (enemy.x, enemy.y)) 
+        enemy.draw(WIN)
     
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
@@ -167,7 +163,7 @@ def game_loop():
     elapsed_time = 0
     global bullet_image
     enemy_spawn_increment = 1500
-    enemy2_spawn_increment = 20000
+    enemy2_spawn_increment = 1000 #TODO change to 200000 or some
     enemy2_last_spawn_time = 0
     
     enemy_count = 0
@@ -227,14 +223,15 @@ def game_loop():
         # spawn enemies
         if not game_won and enemy_count > enemy_spawn_increment:
             #spawn enemy 2
-            if elapsed_time > 0 and elapsed_time < 80:
+            if elapsed_time > 0 and elapsed_time < 5:
                 if(pygame.time.get_ticks() - enemy2_last_spawn_time) > enemy2_spawn_increment:
                     enemy2_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
-                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, ENEMY_VELOCITY, 45, 45, "enemy2")
+                    enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2)
+                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 3, 1, 45, 45, "enemy2", enemy2_pattern)
                     enemies.append(enemy2)
                     enemy2_last_spawn_time = pygame.time.get_ticks()
             enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
-            enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, ENEMY_VELOCITY, 45, 30, "enemy1")
+            enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, 3, 1, 45, 30, "enemy1")
             enemies.append(enemy)
             enemy_count = 0
             for time_threshold, spawn_increment in time_thresholds:
