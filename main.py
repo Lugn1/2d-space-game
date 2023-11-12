@@ -21,21 +21,21 @@ PLAYER_VELOCITY = 3
 BULLET_VELOCITY = 5
 BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
-bullets = pygame.sprite.Group()
+#bullets = pygame.sprite.Group()
 
 ENEMY_VELOCITY = 0.5
 ENEMY1_WIDTH = 45
 ENEMY1_HEIGHT = 30 
-enemies = []
+#enemies = []
 
 PROJECTILE_WIDTH = 6
 PROJECTILE_HEIGHT = 12
 PROJECTILE_VELOCITY = 1.5
-projectiles = []
-boss_projectiles = pygame.sprite.Group()
+#projectiles = []
+#boss_projectiles = pygame.sprite.Group()
 
 # sound_effects
-game_over_mocking_laugh = pygame.mixer.Sound("./sound_effects/mocking_laugh_1.wav")
+
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space game")
@@ -75,7 +75,7 @@ def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
         heart_img = full_heart if i < player.current_hp else empty_heart
         WIN.blit(heart_img, (start_x, start_y - i * 25))
 
-def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
+def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, boss=None, fps=0):
     WIN.blit(BG, (0, 0))
     draw_hearts(player, full_heart, empty_heart, WIDTH - WIDTH + 10, HEIGHT - 70)
   
@@ -104,6 +104,7 @@ def draw(player, elapsed_time, projectiles, enemies, boss=None, fps=0):
 
     for projectile in boss_projectiles:
         projectile.draw(WIN)
+
 
     
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")
@@ -172,6 +173,12 @@ def game_loop():
     game_won = False
     lost_text = FONT.render("Game Over!", 1, "white")
     win_text = FONT.render("YOU WON!", 1, "white")    
+    game_over_mocking_laugh = pygame.mixer.Sound("./sound_effects/mocking_laugh_1.wav")
+    # Refresh variables for restart-level
+    enemies = []
+    bullets = pygame.sprite.Group()
+    boss_projectiles = pygame.sprite.Group()
+    projectiles = []
 
     while run:
         TIMER = clock.tick(144)
@@ -180,6 +187,8 @@ def game_loop():
         fps = clock.get_fps()
         bullets.update()
         keys = pygame.key.get_pressed()
+
+        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, boss=boss, fps=fps)   
 
         time_thresholds = [
             (0, 1500),
@@ -201,6 +210,8 @@ def game_loop():
                     action = pause_menu(WIN)
                     if action == 'quit':
                         run = False
+                    elif action == 'restart':
+                        return game_loop()    
                     elif action == 'main_menu':
                         return    
 
@@ -215,7 +226,7 @@ def game_loop():
                 else:
                     break
         
-        if elapsed_time >= 100 and not boss_fight:
+        if elapsed_time >= 2 and not boss_fight:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
             horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
             boss_health = 100
@@ -301,7 +312,7 @@ def game_loop():
              pygame.time.delay(4000)
              break
 
-        draw(player, elapsed_time, projectiles, enemies, boss=boss, fps=fps)    
+         
 
     main_menu(WIN)
 
