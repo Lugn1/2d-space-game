@@ -25,12 +25,12 @@ ENEMY1_HEIGHT = 30
 
 PROJECTILE_WIDTH = 6
 PROJECTILE_HEIGHT = 12
-PROJECTILE_VELOCITY = 1.5
+PROJECTILE_VELOCITY = 1
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space game")
 FONT = pygame.font.SysFont("comicsans", 30)
-pygame.display.flip
+
 
 
 try:
@@ -111,6 +111,7 @@ def pause_menu(screen):
     clock = pygame.time.Clock()
     pause_options = ["Resume", "Restart Level", "Back to Menu", "Quit"]
     pointer_pos = 0
+    
 
     font = pygame.font.SysFont("comicsans", 40)
 
@@ -167,6 +168,7 @@ def game_loop():
     bullets = pygame.sprite.Group()
     boss_projectiles = pygame.sprite.Group()
     projectiles = []
+   
 
     while run:
         TIMER = clock.tick(144)
@@ -312,7 +314,7 @@ def main_menu(screen):
     
     while menu:
         screen.fill((0, 0, 0,))
-        mouse_x, mouse_y = pygame.mouse.get_pos()
+        #mouse_x, mouse_y = pygame.mouse.get_pos()
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -333,28 +335,28 @@ def main_menu(screen):
                     elif pointer_pos == 2:
                         return "quit"    
             # Mouse events
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    for index, option in enumerate(menu_options):
-                        text = font.render(option, True, (255, 255, 255))
-                        text_rect = text.get_rect(center=(WIDTH / 2, 200 + 60 * index))
-                        if text_rect.collidepoint((mouse_x, mouse_y)):
-                            if index == 0:
-                                return "start_game"
-                            elif index == 1:
-                                #return "options"
-                                print("options")
-                            elif index == 2:
-                                pygame.quit()
-                                return    
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     if event.button == 1:
+            #         for index, option in enumerate(menu_options):
+            #             text = font.render(option, True, (255, 255, 255))
+            #             text_rect = text.get_rect(center=(WIDTH / 2, 200 + 60 * index))
+            #             if text_rect.collidepoint((mouse_x, mouse_y)):
+            #                 if index == 0:
+            #                     return "start_game"
+            #                 elif index == 1:
+            #                     #return "options"
+            #                     print("options")
+            #                 elif index == 2:
+            #                     pygame.quit()
+            #                     return    
         
-        # check if mouse is hovering over any option                            
-        for index, option in enumerate(menu_options):
-            text = font.render(option, True, (255, 255, 255))
-            text_rect = text.get_rect(center=(WIDTH / 2, 200 + 70 * index))
-            if text_rect.collidepoint((mouse_x, mouse_y)):
-                pointer_pos = index
-                break    
+        # # check if mouse is hovering over any option                            
+        # for index, option in enumerate(menu_options):
+        #     text = font.render(option, True, (255, 255, 255))
+        #     text_rect = text.get_rect(center=(WIDTH / 2, 200 + 70 * index))
+        #     if text_rect.collidepoint((mouse_x, mouse_y)):
+        #         pointer_pos = index
+        #         break    
         
         # render menu options
         for index, option in enumerate(menu_options):
@@ -371,6 +373,7 @@ def main_menu(screen):
 
 def main():
     pygame.init()
+    pygame.mouse.set_visible(False)
     try:
         if main_menu(WIN) == "start_game":
             game_loop()
