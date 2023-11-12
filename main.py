@@ -266,6 +266,11 @@ def game_loop():
 def main_menu(screen):
     menu = True
     clock = pygame.time.Clock()
+    menu_options = ["Start Game", "Options", "Exit"]
+    pointer_pos = 0
+    
+
+    font = pygame.font.SysFont("comicsans", 40)
 
     while menu:
         screen.fill((0, 0, 0,))
@@ -273,19 +278,26 @@ def main_menu(screen):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
-            if event.type == pygame.KEYDOWN:    
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                    pointer_pos = (pointer_pos + 1) % len(menu_options)
+                if event.key == pygame.K_w or event.key == pygame.K_UP:
+                    pointer_pos = (pointer_pos - 1) % len(menu_options)
                 if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
-                    menu = False
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    return
+                    if pointer_pos == 0:
+                        menu = False
+                    elif pointer_pos == 1:
+                        print("Options")
+                    elif pointer_pos == 2:
+                        pygame.quit()
+                        return            
 
-        font = pygame.font.SysFont("comicsans", 40)
-        title = font.render("Main Menu", True, (255, 255, 255))
-        screen.blit(title, (100, 100))
-
-        start_game = font.render("Press Enter to Start", True, (255, 255, 255))
-        screen.blit(start_game, (100, 200))
+        for index, option in enumerate(menu_options):
+            if index == pointer_pos:
+                label = font.render(f"> {option}", True, (255, 255, 255))
+            else:
+                label = font.render(option, True, (255, 255, 255))
+            screen.blit(label, (100, 100 + 50 * index))                    
 
         pygame.display.update()
         clock.tick(144)
