@@ -9,7 +9,7 @@ from movement_patterns.enemy_patterns.horizontal_movement import EnemyHorizontal
 pygame.font.init()
 pygame.mixer.init()
 
-WIDTH, HEIGHT = 1200, 800
+WIDTH, HEIGHT = 1600, 1000
 
 PLAYER_WIDTH = 45
 PLAYER_HEIGHT = 30
@@ -41,7 +41,7 @@ try:
     enemy1_img = pygame.image.load("./sprites/enemy1.png")
     enemy1_img = pygame.transform.scale(enemy1_img, (45, 30))
     enemy2_img = pygame.image.load("./sprites/enemy2.png")
-    enemy2_img = pygame.transform.scale(enemy2_img, (45, 45))
+    enemy2_img = pygame.transform.scale(enemy2_img, (40, 25))
 
     # player bullets
     player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
@@ -53,7 +53,7 @@ try:
     enemy1_projectile_img = pygame.transform.rotate(enemy1_projectile_img, -90)
 
     enemy2_projectile_img = pygame.image.load("./sprites/enemy2_projectile.png")
-    enemy2_projectile_img = pygame.transform.scale(enemy2_projectile_img, (80, 80))
+    enemy2_projectile_img = pygame.transform.scale(enemy2_projectile_img, (65, 65))
     enemy2_projectile_img = pygame.transform.rotate(enemy2_projectile_img, -90)
 
     boss1_projectile_img = enemy1_projectile_img 
@@ -80,7 +80,6 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
   
     #pygame.draw.rect(WIN, "red", player, 2) 
 
-    
     WIN.blit(player.image, player.rect)
     player.draw_dash_tracker(WIN)
 
@@ -226,8 +225,9 @@ def game_loop():
             if elapsed_time > 0 and elapsed_time < 5:
                 if(pygame.time.get_ticks() - enemy2_last_spawn_time) > enemy2_spawn_increment:
                     enemy2_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
+                    # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
                     enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2)
-                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 3, 1, 45, 45, "enemy2", enemy2_pattern)
+                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 4, 1, 45, 45, "enemy2", enemy2_pattern)
                     enemies.append(enemy2)
                     enemy2_last_spawn_time = pygame.time.get_ticks()
             enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
@@ -317,7 +317,7 @@ def game_loop():
                 projectiles.remove(projectile)
                 if player.is_hit():
                     print("player is dead")
-                    game_over = False # TODO swap to true 
+                    game_over = True # TODO swap to true 
                 break    
         
         if game_over:
@@ -325,7 +325,7 @@ def game_loop():
              WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
              pygame.display.update()
              pygame.time.delay(4000)
-             break
+             return "game_over" # TODO go to game over
 
 def main_menu(screen):
     menu = True

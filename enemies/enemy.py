@@ -8,7 +8,7 @@ default_projectile_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSoun
 
 
 class Enemy:
-    # x, y, img, projectile_img, projectile_width, projectile_height, projectile_velocity, projectiles[], velocity, width, height TODO maybe change to this
+    # x, y, img, projectile_img, projectile_width, projectile_height, projectile_velocity, projectiles[], velocity, width, height, type, move_pattern TODO maybe change to this
     def __init__(self, x, y, img, projectile_img, projectiles, projectile_velocity, velocity, width, height, type, movement_pattern=None):
         self.x = x
         self.y = y
@@ -48,21 +48,24 @@ class Enemy:
         elif self.type == 'enemy2':
              win.blit(self.img, (self.x, self.y))
 
-
-
-
     def shoot(self):
-        if self.shoot_count == 200:
-            if self.type == 'enemy1':
+        shoot_threshold_enemy1 = 200
+        shoot_threshold_enemy2 = 100
+
+        if self.type == 'enemy1':
+            if self.shoot_count >= shoot_threshold_enemy1:
                 #projectile_sound.play()
                 projectile_pos = self.rect.midtop
-            if self.type == 'enemy2':
+                self.reset_shoot_count(projectile_pos)
+        elif self.type == 'enemy2':
+            if self.shoot_count >= shoot_threshold_enemy2:
                 #projectile_sound.play()
                 projectile_pos = (self.rect.x + self.width // 2, self.rect.y)
-            
-            
-            projectile = Projectile(projectile_pos, self.projectile_img, self.projectile_velocity, 60) #pygame.Rect(projectile_x, projectile_y, PROJECTILE_WIDTH, PROJECTILE_HEIGHT)
-            self.projectiles.append(projectile)
-            self.shoot_count = 0
-        self.shoot_count += 1    
+                self.reset_shoot_count(projectile_pos)    
+        self.shoot_count += 1 
+
+    def reset_shoot_count(self, projectile_pos):
+        projectile = Projectile(projectile_pos, self.projectile_img, self.projectile_velocity, 60) #pygame.Rect(projectile_x, projectile_y, PROJECTILE_WIDTH, PROJECTILE_HEIGHT)
+        self.projectiles.append(projectile)
+        self.shoot_count = 0           
             
