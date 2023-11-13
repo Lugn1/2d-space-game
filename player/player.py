@@ -3,6 +3,7 @@ from projectiles.bullet import Bullet
 
 pygame.init()
 bullet_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSound.wav")
+dash_sound = pygame.mixer.Sound("./sound_effects/player_dash.wav")
 class Player:
     def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_velocity, bullet_width, bullet_height):
         self.image = image
@@ -40,21 +41,24 @@ class Player:
         # add dash
         if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
             if not self.is_dashing and self.dash_timer == 0:
+                
                 self.is_dashing = True
                 self.dash_timer = self.dash_duration
         # current speed bases on dash or not
         current_velocity = self.dash_velocity if self.is_dashing else self.velocity   
 
-        if self.rect.right < 0:
-            self.rect.left = self.screen_width
-        elif self.rect.left > self.screen_width:
-            self.rect.right = 0     
+        # if self.rect.right < 0:
+        #     self.rect.left = self.screen_width
+        #     dash_sound.play()
+        # elif self.rect.left > self.screen_width:
+        #     self.rect.right = 0   
+        #     dash_sound.play()  
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]):
-            self.rect.x -= current_velocity
+            self.rect.x = max(0, self.rect.x - current_velocity)
             #self.rect.x = max(0, self.rect.x - current_velocity)      
         if (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
-            self.rect.x += current_velocity
+            self.rect.x = min(self.screen_width - self.width, self.rect.x + current_velocity)
             #self.rect.x = min(self.screen_width - self.width, self.rect.x + current_velocity)
         if (keys[pygame.K_w] or keys[pygame.K_UP]):
             self.rect.y = max(0, self.rect.y - current_velocity) 

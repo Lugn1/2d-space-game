@@ -26,15 +26,30 @@ class Enemy:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def move(self):
-        if not self.movement_pattern:
+        
+        if self.type == 'enemy1':
             self.y += self.velocity
             self.rect.y = self.y
-        else: 
+        elif self.type == 'enemy2':
             if self.rect.y >= 100:
                 self.movement_pattern.move(self)
             else:
                 self.y += self.velocity
                 self.rect.y = self.y
+        elif self.type == 'enemy3':
+            self.movement_pattern.move(self)
+            self.y += self.velocity
+            self.rect.y = self.y
+
+        # if not self.movement_pattern:
+        #     self.y += self.velocity
+        #     self.rect.y = self.y
+        # else: 
+        #     if self.rect.y >= 100:
+        #         self.movement_pattern.move(self)
+        #     else:
+        #         self.y += self.velocity
+        #         self.rect.y = self.y
                 
         self.x = self.rect.x
         self.y = self.rect.y
@@ -48,10 +63,14 @@ class Enemy:
         elif self.type == 'enemy2':
              win.blit(self.img, (self.x, self.y))
              pygame.draw.rect(win, "red", self, 2)
+        elif self.type == 'enemy3':
+            win.blit(self.img, (self.x, self.y))
+            pygame.draw.rect(win, "green", self, 2)     
 
     def shoot(self):
         shoot_threshold_enemy1 = 200
         shoot_threshold_enemy2 = 100
+        shoot_threshold_enemy3 = 50
 
         if self.type == 'enemy1':
             if self.shoot_count >= shoot_threshold_enemy1:
@@ -62,7 +81,11 @@ class Enemy:
             if self.shoot_count >= shoot_threshold_enemy2:
                 #projectile_sound.play()
                 projectile_pos = (self.rect.x + self.width // 2, self.rect.y)
-                self.reset_shoot_count(projectile_pos)    
+                self.reset_shoot_count(projectile_pos)   
+        elif self.type == 'enemy3':
+            if self.shoot_count >= shoot_threshold_enemy3:
+                projectile_pos = self.rect.midtop
+                self.reset_shoot_count(projectile_pos)         
         self.shoot_count += 1 
 
     def reset_shoot_count(self, projectile_pos):

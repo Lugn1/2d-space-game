@@ -19,8 +19,6 @@ BULLET_VELOCITY = 5
 BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
 
-#ENEMY_VELOCITY = 0.5
-
 PROJECTILE_WIDTH = 6
 PROJECTILE_HEIGHT = 12
 PROJECTILE_VELOCITY = 1
@@ -162,8 +160,10 @@ def game_loop():
     elapsed_time = 0
     global bullet_image
     enemy_spawn_increment = 1500
-    enemy2_spawn_increment = 1500 #TODO change to 200000 or some
+    enemy2_spawn_increment = 20000 
     enemy2_last_spawn_time = 0
+    enemy3_spawn_interval = 10000
+    enemy3_last_spawn_time = 0
     
     enemy_count = 0
     boss_fight = False
@@ -188,7 +188,6 @@ def game_loop():
         fps = clock.get_fps()
         bullets.update()
         keys = pygame.key.get_pressed()
-
         draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, boss=boss, fps=fps)   
 
         time_thresholds = [
@@ -205,7 +204,6 @@ def game_loop():
             (91, 50000000)
         ]
 
-            
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'quit'
@@ -218,30 +216,43 @@ def game_loop():
                         return game_loop()    
                     elif action == 'main_menu':
                         return main_menu(WIN)   
-                    
-        # spawn enemies
-        if not game_won and enemy_count > enemy_spawn_increment:
+
+            # spawn enemy 1
+            if not game_won and enemy_count > enemy_spawn_increment:
+                enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
+                enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, 3, 1, 45, 30, "enemy1")
+                enemies.append(enemy)
+                enemy_count = 0
+                for time_threshold, spawn_increment in time_thresholds:
+                    if elapsed_time >= time_threshold:
+                        enemy_spawn_increment = spawn_increment
+                    else:
+                     break
+
             #spawn enemy 2
             if elapsed_time > 0 and elapsed_time < 90:
                 if(pygame.time.get_ticks() - enemy2_last_spawn_time) > enemy2_spawn_increment:
                     enemy2_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
                     # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
-                    enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2)
+                    enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 200)
                     enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 4, 1, 45, 25, "enemy2", enemy2_pattern)
                     enemies.append(enemy2)
                     enemy2_last_spawn_time = pygame.time.get_ticks()
-            enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
-            enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, 3, 1, 45, 30, "enemy1")
-            enemies.append(enemy)
-            enemy_count = 0
-            for time_threshold, spawn_increment in time_thresholds:
-                if elapsed_time >= time_threshold:
-                    enemy_spawn_increment = spawn_increment
-                else:
-                    break
 
+            #spawn enemy 3        
+            current_time = pygame.time.get_ticks()
+            if current_time - enemy3_last_spawn_time > enemy3_spawn_interval and not elapsed_time > 31:
+                #if(pygame.time.get_ticks() - enemy3_last_spawn_time) > enemy3_spawn_increment:
+                    enemy3_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
+                    # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
+                    enemy3_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 120)
+                    enemy3 = Enemy(enemy3_x_pos, -50, enemy1_img, enemy1_projectile_img, projectiles, 4, 1, 45, 25, "enemy3", enemy3_pattern)
+                    enemies.append(enemy3)
+                    enemy3_last_spawn_time = current_time
+
+        
         # spawn boss
-        if elapsed_time >= 100 and not boss_fight:
+        if elapsed_time >= 100 and not boss_fight and not enemies:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
             horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
             boss_health = 100
@@ -317,7 +328,7 @@ def game_loop():
                 projectiles.remove(projectile)
                 if player.is_hit():
                     print("player is dead")
-                    game_over = True # TODO swap to true 
+                    game_over = False # TODO swap to true 
                 break    
         
         if game_over:
