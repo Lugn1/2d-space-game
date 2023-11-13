@@ -1,5 +1,7 @@
 import pygame
+import random
 from projectiles.projectile import Projectile
+from projectiles.zigzag_projectile import ZigzagProjectile
 
 #PROJECTILE_WIDTH = 6
 #PROJECTILE_HEIGHT = 12
@@ -24,7 +26,7 @@ class Boss:
         self.projectile_velocity = projectile_velocity
         self.moving_in = True
         self.movement_pattern = movement_pattern
-        # maybe move health out from boss class
+        # change health depending on what boss
         self.health_bar_width = self.max_health * 5
         self.health_bar_height = 20
         self.health_bar_x = screen_width / 2 - self.health_bar_width / 2
@@ -33,8 +35,14 @@ class Boss:
 
     def attack(self, player):
         if not self.moving_in:
-            projectile_pos = self.rect.midtop
-            projectile = Projectile(projectile_pos, self.projectile_img, self.projectile_velocity, 100)
+            projectile_type = random.choice(['default', 'zigzag'])
+            if projectile_type == 'normal':
+                projectile = Projectile(self.rect.midtop, self.projectile_img, self.projectile_velocity, 100)
+            elif projectile_type == 'zigzag':
+                projectile = ZigzagProjectile(self.rect.midtop, self.projectile_img, self.projectile_velocity - 2, 100, amplitude=5, frequency=50)
+            else:
+                projectile = Projectile(self.rect.midtop, self.projectile_img, self.projectile_velocity, 100)
+            
             self.projectile_group.add(projectile)
             self.attack_timer = 0
 
