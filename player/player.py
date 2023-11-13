@@ -34,7 +34,7 @@ class Player:
         self.dash_tracker_y = self.screen_height - 30
         self.dash_tracker_color = (40, 200, 255)
         
-        
+        self.game_over = False
 
 
     def move(self, keys):
@@ -91,13 +91,17 @@ class Player:
             bullet_velocity = self.bullet_velocity
             # Send bullet hitbox size as an argument to match the hitbox for later when 
             # multiple bullets are being used
-            bullet = Bullet(bullet_pos, bullet_image, bullet_velocity, 90)
+            bullet = Bullet(bullet_pos, bullet_image, bullet_velocity, 110)
             bullet_group.add(bullet)
             self.last_shot = current_time
 
+            
+
     def is_hit(self):
+        print(self.current_hp)
         self.current_hp -= 1
-        print("player got hit, HP: ", self.current_hp)
+        if self.current_hp <= 0:
+            self.game_over = True
         return self.current_hp <= 0
         
 

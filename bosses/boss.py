@@ -39,7 +39,7 @@ class Boss:
             if projectile_type == 'normal':
                 projectile = Projectile(self.rect.midtop, self.projectile_img, self.projectile_velocity, 100)
             elif projectile_type == 'zigzag':
-                projectile = ZigzagProjectile(self.rect.midtop, self.projectile_img, self.projectile_velocity - 2, 100, amplitude=5, frequency=50)
+                projectile = ZigzagProjectile(self.rect.midtop, self.projectile_img, self.projectile_velocity - 2.5, 100, amplitude=5, frequency=50)
             else:
                 projectile = Projectile(self.rect.midtop, self.projectile_img, self.projectile_velocity, 100)
             
