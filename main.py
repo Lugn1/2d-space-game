@@ -78,7 +78,7 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     WIN.blit(BG, (0, 0))
     draw_hearts(player, full_heart, empty_heart, WIDTH - WIDTH + 10, HEIGHT - 70)
   
-    #pygame.draw.rect(WIN, "red", player, 2) 
+    pygame.draw.rect(WIN, "red", player, 2) 
 
     WIN.blit(player.image, player.rect)
     player.draw_dash_tracker(WIN)
@@ -162,7 +162,7 @@ def game_loop():
     elapsed_time = 0
     global bullet_image
     enemy_spawn_increment = 1500
-    enemy2_spawn_increment = 1000 #TODO change to 200000 or some
+    enemy2_spawn_increment = 1500 #TODO change to 200000 or some
     enemy2_last_spawn_time = 0
     
     enemy_count = 0
@@ -222,12 +222,12 @@ def game_loop():
         # spawn enemies
         if not game_won and enemy_count > enemy_spawn_increment:
             #spawn enemy 2
-            if elapsed_time > 0 and elapsed_time < 5:
+            if elapsed_time > 0 and elapsed_time < 90:
                 if(pygame.time.get_ticks() - enemy2_last_spawn_time) > enemy2_spawn_increment:
                     enemy2_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
                     # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
                     enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2)
-                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 4, 1, 45, 45, "enemy2", enemy2_pattern)
+                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 4, 1, 45, 25, "enemy2", enemy2_pattern)
                     enemies.append(enemy2)
                     enemy2_last_spawn_time = pygame.time.get_ticks()
             enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
@@ -241,7 +241,7 @@ def game_loop():
                     break
 
         # spawn boss
-        if elapsed_time >= 110 and not boss_fight:
+        if elapsed_time >= 100 and not boss_fight:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
             horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
             boss_health = 100

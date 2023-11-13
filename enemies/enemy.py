@@ -44,9 +44,10 @@ class Enemy:
     def draw(self, win):
         if self.type == 'enemy1':
             win.blit(self.img, (self.x, self.y))
-             #pygame.draw.rect(WIN, "red", enemy, 2)
+            pygame.draw.rect(win, "red", self, 2)
         elif self.type == 'enemy2':
              win.blit(self.img, (self.x, self.y))
+             pygame.draw.rect(win, "red", self, 2)
 
     def shoot(self):
         shoot_threshold_enemy1 = 200
