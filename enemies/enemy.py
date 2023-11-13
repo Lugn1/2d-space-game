@@ -26,7 +26,6 @@ class Enemy:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def move(self):
-        
         if self.type == 'enemy1':
             self.y += self.velocity
             self.rect.y = self.y
@@ -39,18 +38,7 @@ class Enemy:
         elif self.type == 'enemy3':
             self.movement_pattern.move(self)
             self.y += self.velocity
-            self.rect.y = self.y
-
-        # if not self.movement_pattern:
-        #     self.y += self.velocity
-        #     self.rect.y = self.y
-        # else: 
-        #     if self.rect.y >= 100:
-        #         self.movement_pattern.move(self)
-        #     else:
-        #         self.y += self.velocity
-        #         self.rect.y = self.y
-                
+            self.rect.y = self.y            
         self.x = self.rect.x
         self.y = self.rect.y
 
@@ -59,13 +47,13 @@ class Enemy:
     def draw(self, win):
         if self.type == 'enemy1':
             win.blit(self.img, (self.x, self.y))
-            pygame.draw.rect(win, "red", self, 2)
+            #pygame.draw.rect(win, "red", self, 2)
         elif self.type == 'enemy2':
              win.blit(self.img, (self.x, self.y))
-             pygame.draw.rect(win, "red", self, 2)
+            #pygame.draw.rect(win, "red", self, 2)
         elif self.type == 'enemy3':
             win.blit(self.img, (self.x, self.y))
-            pygame.draw.rect(win, "green", self, 2)     
+            #pygame.draw.rect(win, "green", self, 2)     
 
     def shoot(self):
         shoot_threshold_enemy1 = 200

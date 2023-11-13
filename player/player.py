@@ -102,7 +102,6 @@ class Player:
 
     def draw(self, window):
         window.blit(self.image, self.rect)   
-
         # Draw the hitbox for debugging
         pygame.draw.rect(window, (0, 255, 0), self.rect, 1)        
 

@@ -76,7 +76,7 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     WIN.blit(BG, (0, 0))
     draw_hearts(player, full_heart, empty_heart, WIDTH - WIDTH + 10, HEIGHT - 70)
   
-    pygame.draw.rect(WIN, "red", player, 2) 
+    #pygame.draw.rect(WIN, "red", player, 2) 
 
     WIN.blit(player.image, player.rect)
     player.draw_dash_tracker(WIN)
@@ -160,7 +160,7 @@ def game_loop():
     elapsed_time = 0
     global bullet_image
     enemy_spawn_increment = 1500
-    enemy2_spawn_increment = 20000 
+    enemy2_spawn_increment = 8000 
     enemy2_last_spawn_time = 0
     enemy3_spawn_interval = 10000
     enemy3_last_spawn_time = 0
@@ -230,29 +230,29 @@ def game_loop():
                      break
 
             #spawn enemy 2
-            if elapsed_time > 0 and elapsed_time < 90:
+            if elapsed_time > 9 and elapsed_time < 90:
                 if(pygame.time.get_ticks() - enemy2_last_spawn_time) > enemy2_spawn_increment:
                     enemy2_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
                     # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
-                    enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 200)
+                    enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 200, True)
                     enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 4, 1, 45, 25, "enemy2", enemy2_pattern)
                     enemies.append(enemy2)
                     enemy2_last_spawn_time = pygame.time.get_ticks()
 
             #spawn enemy 3        
             current_time = pygame.time.get_ticks()
-            if current_time - enemy3_last_spawn_time > enemy3_spawn_interval and not elapsed_time > 31:
+            if current_time - enemy3_last_spawn_time > enemy3_spawn_interval and elapsed_time < 90 and elapsed_time > 9:
                 #if(pygame.time.get_ticks() - enemy3_last_spawn_time) > enemy3_spawn_increment:
                     enemy3_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
                     # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
-                    enemy3_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 120)
+                    enemy3_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 120, True)
                     enemy3 = Enemy(enemy3_x_pos, -50, enemy1_img, enemy1_projectile_img, projectiles, 4, 1, 45, 25, "enemy3", enemy3_pattern)
                     enemies.append(enemy3)
                     enemy3_last_spawn_time = current_time
 
         
         # spawn boss
-        if elapsed_time >= 100 and not boss_fight and not enemies:
+        if elapsed_time >= 100 and not boss_fight:
             boss_projectile_velocity = 0.5 # TODO this does not work properly
             horizontal_movement = HorizontalMovementPattern(left_limit = WIDTH - WIDTH, right_limit = WIDTH, velocity = 2, direction_interval = 120)
             boss_health = 100
@@ -270,9 +270,10 @@ def game_loop():
 
             if boss.move_projectiles(PROJECTILE_VELOCITY, player):
                 if player.is_hit(): 
-                    #TODO change to this  
-                    #game_over = player.current_hp <= 0 #False 
-                    game_over = False      
+                    # TODO change to this   
+                    game_over = player.current_hp <= 0 #False 
+                    # TODO godmode, for development 
+                    #game_over = False      
                     if game_over:
                         print("player killed by boss") 
 
@@ -328,10 +329,11 @@ def game_loop():
                 projectiles.remove(projectile)
                 if player.is_hit():
                     print("player is dead")
-                    game_over = False # TODO swap to true 
+                    game_over = True # TODO swap to true 
                 break    
         
         if game_over:
+             pygame.display.update()
              game_over_mocking_laugh.play()
              WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
              pygame.display.update()
