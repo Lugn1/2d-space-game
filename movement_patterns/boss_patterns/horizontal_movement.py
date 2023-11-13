@@ -7,6 +7,7 @@ class HorizontalMovementPattern(MovementPattern):
         self.left_limit = left_limit
         self.right_limit = right_limit
         self.velocity = velocity
+        
         self.move_direction = 1
         self.change_interval = direction_interval
         self.since_change = 0

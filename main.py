@@ -1,6 +1,8 @@
 import pygame
 import time
 import random 
+import os
+import sys
 from enemies.enemy import Enemy
 from bosses.boss import Boss
 from player.player import Player
@@ -65,6 +67,18 @@ try:
     
 except Exception as e:
     print("Error loading image", e)
+
+
+def resource_path(relative_path):
+    # Get absolute path to resource, works for dev and for PyInstaller
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 
 
 def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
@@ -159,8 +173,9 @@ def game_loop():
     start_time = time.time()
     elapsed_time = 0
     global bullet_image
+    # enemies spawn interval
     enemy_spawn_increment = 1500
-    enemy2_spawn_increment = 8000 
+    enemy2_spawn_increment = 7000 
     enemy2_last_spawn_time = 0
     enemy3_spawn_interval = 10000
     enemy3_last_spawn_time = 0
