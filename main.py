@@ -86,9 +86,11 @@ def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
         heart_img = full_heart if i < player.current_hp else empty_heart
         WIN.blit(heart_img, (start_x, start_y - i * 25))
 
-def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, boss=None, fps=0):
+def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies,game_over, boss=None, fps=0):
     WIN.blit(BG, (0, 0))
-    draw_hearts(player, full_heart, empty_heart, WIDTH - WIDTH + 10, HEIGHT - 70)
+
+    if not game_over:
+        draw_hearts(player, full_heart, empty_heart, WIDTH - WIDTH + 10, HEIGHT - 70)
   
     #pygame.draw.rect(WIN, "red", player, 2) 
 
@@ -203,7 +205,7 @@ def game_loop():
         fps = clock.get_fps()
         bullets.update()
         keys = pygame.key.get_pressed()
-        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, boss=boss, fps=fps)   
+        
 
         time_thresholds = [
             (0, 1500),
@@ -347,6 +349,9 @@ def game_loop():
                     game_over = True # TODO swap to true 
                 break    
         
+
+        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, game_over, boss=boss, fps=fps)
+        
         if game_over:
              pygame.display.update()
              game_over_mocking_laugh.play()
@@ -354,6 +359,8 @@ def game_loop():
              pygame.display.update()
              pygame.time.delay(4000)
              return "game_over" # TODO go to game over
+
+        
 
 def main_menu(screen):
     menu = True
