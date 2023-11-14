@@ -5,7 +5,7 @@ class EnemyHorizontalMovementPattern(MovementPattern):
     def __init__(self, left_limit, right_limit, velocity, direction_interval, random_x=False):
         self.left_limit = left_limit
         self.right_limit = right_limit
-        self.velocity = velocity
+        self.velocity = velocity + 2
         self.random_x = random_x
 
         self.move_direction = 1

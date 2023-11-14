@@ -15,15 +15,15 @@ WIDTH, HEIGHT = 1600, 1000
 
 PLAYER_WIDTH = 45
 PLAYER_HEIGHT = 30
-PLAYER_VELOCITY = 4
+PLAYER_VELOCITY = 6
 
-BULLET_VELOCITY = 6
+BULLET_VELOCITY = 8
 BULLET_WIDTH = 20
 BULLET_HEIGHT = 30
 
 PROJECTILE_WIDTH = 6
 PROJECTILE_HEIGHT = 12
-PROJECTILE_VELOCITY = 1
+PROJECTILE_VELOCITY = 2
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space game")
@@ -102,16 +102,16 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies,g
     
     if boss:
         WIN.blit(boss.image, (boss.rect.x, boss.rect.y))
-        pygame.draw.rect(WIN, "red", boss, 2) 
+        #pygame.draw.rect(WIN, "red", boss, 2) 
         boss.draw_health_bar(WIN)
 
     for bullet in bullets:
         bullet.draw(WIN)
-        pygame.draw.rect(WIN, "green", bullet, 2) 
+        #pygame.draw.rect(WIN, "green", bullet, 2) 
     
     for projectile in projectiles:
         projectile.draw(WIN)
-        pygame.draw.rect(WIN, "red", projectile)
+        #pygame.draw.rect(WIN, "red", projectile)
 
     for projectile in boss_projectiles:
         projectile.draw(WIN)
@@ -239,7 +239,8 @@ def game_loop():
             # spawn enemy 1
             if not game_won and enemy_count > enemy_spawn_increment:
                 enemy_x_position = random.randint(0, WIDTH - PLAYER_WIDTH) 
-                enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, 3, 1, 45, 30, "enemy1")
+                # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
+                enemy = Enemy(enemy_x_position, -50, enemy1_img, enemy1_projectile_img, projectiles, 5, 2, 45, 30, "enemy1")
                 enemies.append(enemy)
                 enemy_count = 0
                 for time_threshold, spawn_increment in time_thresholds:
@@ -248,30 +249,30 @@ def game_loop():
                     else:
                       break
 
-            #spawn enemy 2
+            #spawn enemy 2 (blue enemy)
             if elapsed_time > 9 and elapsed_time < 90:
                 if(pygame.time.get_ticks() - enemy2_last_spawn_time) > enemy2_spawn_increment:
                     enemy2_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
                      # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
                     enemy2_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 200, True)
-                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 4, 1, 45, 25, "enemy2", enemy2_pattern)
+                    enemy2 = Enemy(enemy2_x_pos, -50, enemy2_img, enemy2_projectile_img, projectiles, 8, 3, 45, 25, "enemy2", enemy2_pattern)
                     enemies.append(enemy2)
                     enemy2_last_spawn_time = pygame.time.get_ticks()
 
-            #spawn enemy 3        
+            #spawn enemy 3 (zigzag enemy1)        
             current_time = pygame.time.get_ticks()
             if current_time - enemy3_last_spawn_time > enemy3_spawn_interval and elapsed_time < 90 and elapsed_time > 9:
                  #if(pygame.time.get_ticks() - enemy3_last_spawn_time) > enemy3_spawn_increment:
                     enemy3_x_pos = random.randint(0, WIDTH - PLAYER_WIDTH)
                      # x, y, img, projectile_img, projectile_width, projectile_height, projectiles[], projectile_velocity, velocity, width, height, type, move_pattern 
                     enemy3_pattern = EnemyHorizontalMovementPattern(WIDTH - WIDTH, WIDTH, 2, 120, True)
-                    enemy3 = Enemy(enemy3_x_pos, -50, enemy1_img, enemy1_projectile_img, projectiles, 4, 1, 45, 25, "enemy3", enemy3_pattern)
+                    enemy3 = Enemy(enemy3_x_pos, -50, enemy1_img, enemy1_projectile_img, projectiles, 5, 3, 45, 25, "enemy3", enemy3_pattern)
                     enemies.append(enemy3)
                     enemy3_last_spawn_time = current_time
 
         
         # spawn boss
-        if elapsed_time >= 100 and not boss_fight:
+        if elapsed_time >= 5 and not boss_fight:
             boss_projectile_velocity = 3 
             horizontal_movement = HorizontalMovementPattern(left_limit = 100, right_limit = WIDTH - 100, velocity = 2, direction_interval = 120)
             boss_health = 100
@@ -288,13 +289,14 @@ def game_loop():
                     boss.attack(player)
 
             if boss.move_projectiles(PROJECTILE_VELOCITY, player):
-                if player.is_hit(): 
-                    # TODO change to this   
-                    game_over = player.current_hp <= 0 #False 
+                player_hit = player.is_hit() 
+                game_over = player.current_hp <= 0 #False 
                     # TODO godmode, for development 
                     #game_over = False      
-                    if game_over:
-                        print("player killed by boss") 
+                if game_over:
+                    print("player killed by boss") 
+                elif player_hit:
+                    pass    
 
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
@@ -353,8 +355,6 @@ def game_loop():
                         else:
                             projectiles.remove(projectile)    
                         
-        
-
         draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, game_over, boss=boss, fps=fps)
 
         if game_over:

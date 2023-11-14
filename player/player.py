@@ -22,7 +22,7 @@ class Player:
         self.bullet_cooldown = 500
         self.last_shot = pygame.time.get_ticks()
         # add dash
-        self.dash_velocity = self.velocity * 4
+        self.dash_velocity = self.velocity * 2
         self.dash_duration = 10
         self.dash_cooldown = 400
         self.is_dashing = False
@@ -80,9 +80,6 @@ class Player:
             #print("Cooldown: ", self.dash_timer)
 
 
-        
-
-
     def shoot(self, bullet_group, bullet_image):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot > self.bullet_cooldown:
@@ -96,7 +93,6 @@ class Player:
             self.last_shot = current_time
 
             
-
     def is_hit(self):
         print(self.current_hp)
         self.current_hp -= 1
@@ -108,7 +104,7 @@ class Player:
     def draw(self, window):
         window.blit(self.image, self.rect)   
         # Draw the hitbox for debugging
-        pygame.draw.rect(window, (0, 255, 0), self.rect, 1)        
+        #pygame.draw.rect(window, (0, 255, 0), self.rect, 1)        
 
 
     def draw_dash_tracker(self, screen):
