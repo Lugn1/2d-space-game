@@ -1,4 +1,5 @@
 from projectiles.projectile import Projectile
+import random
 
 
 class ZigzagProjectile(Projectile):
@@ -8,7 +9,7 @@ class ZigzagProjectile(Projectile):
         self.frequency = frequency
         self.tick_counter = 0
         self.hitbox_reduction = hitbox_reduction
-        self.direction = 1
+        self.direction = random.choice([-1, 1])
         self.switch_direction_tick = frequency
     
 
