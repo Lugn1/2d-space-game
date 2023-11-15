@@ -291,7 +291,7 @@ def game_loop():
             if boss.move_projectiles(PROJECTILE_VELOCITY, player):
                 player_hit = player.is_hit() 
                 game_over = player.current_hp <= 0 #False 
-                    # TODO godmode, for development 
+                    # TODO god-mode, for development 
                     #game_over = False      
                 if game_over:
                     print("player killed by boss") 
@@ -365,13 +365,42 @@ def game_loop():
              pygame.time.delay(4000)
              return "game_over" # TODO go to game over
 
-        
+def select_level_menu(screen):
+    selection = True
+    clock = pygame.time.Clock()       
+    level_options = ["Level 1", "Level 2", "Level 3", "Back"]
+    pointer_pos = 0
+
+    while selection:
+        screen.fill((0,0,0))
+
+        for index, option in enumerate(level_options):
+            if index == pointer_pos:
+                label = FONT.render(f"> {option}", True, (255, 255, 255))
+            else:
+                label = FONT.render(option, True, (255, 255, 255))
+            screen.blit(label, (100, 100 + 50 * index))    
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return "quit"
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                        pointer_pos = (pointer_pos + 1) % len(level_options)
+                    elif event.key == pygame.K_w or event.key == pygame.K_UP:
+                        pointer_pos = (pointer_pos - 1) % len(level_options)
+                    elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                        selected_level = level_options[pointer_pos]
+                        return selected_level
+
+        pygame.display.update()
+        clock.tick(60)
 
 def main_menu(screen):
     menu = True
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("comicsans", 40)
-    menu_options = ["Start Game", "Options", "Exit"]
+    menu_options = ["Start Game", "Select level", "Options", "Exit"]
     pointer_pos = 0
     
     while menu:
@@ -391,9 +420,11 @@ def main_menu(screen):
                         return "start_game"
                         #menu = False
                     elif pointer_pos == 1:
+                        return "select_level"    
+                    elif pointer_pos == 2:
                         #return "options"
                         print("Options")
-                    elif pointer_pos == 2:
+                    elif pointer_pos == 3:
                         return "quit"    
         # render menu options
         for index, option in enumerate(menu_options):
@@ -418,6 +449,11 @@ def main():
             result = game_loop()
             if result == "quit":
                 running = False
+        elif action == 'select_level':
+            selected_level = select_level_menu(WIN)
+            if selected_level != "Back":
+                print(f"Selected: {selected_level}")
+            #level = level_selection_menu(WIN)        
         elif action == "quit":
             running = False    
     pygame.quit()
