@@ -1,10 +1,10 @@
 import pygame
 from projectiles.bullet import Bullet
-#from main import resource_path
+from utils import resource_path
 
 pygame.init()
-bullet_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSound.wav")
-dash_sound = pygame.mixer.Sound("./sound_effects/player_dash.wav")
+bullet_sound = pygame.mixer.Sound(resource_path("./sound_effects/bulletDefaultSound.wav"))
+dash_sound = pygame.mixer.Sound(resource_path("./sound_effects/player_dash.wav"))
 class Player:
     def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_velocity, bullet_width, bullet_height):
         self.image = image

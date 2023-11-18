@@ -3,7 +3,6 @@ import time
 import random 
 import os
 import sys
-from enemies.enemy import Enemy
 from bosses.boss import Boss
 from player.player import Player
 from movement_patterns.boss_patterns.horizontal_movement import HorizontalMovementPattern
@@ -169,6 +168,7 @@ def pause_menu(screen):
         clock.tick(60)
 
 def game_loop():
+    from enemies.enemy import Enemy
     run = True
     player = Player(WIDTH/2 - 40, HEIGHT/2, playerShip, PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_VELOCITY, HEIGHT, WIDTH, BULLET_VELOCITY, BULLET_WIDTH, BULLET_HEIGHT)
     clock = pygame.time.Clock()

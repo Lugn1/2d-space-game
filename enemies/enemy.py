@@ -1,10 +1,10 @@
 import pygame
 from projectiles.projectile import Projectile
-
+from utils import resource_path
 
 pygame.init()
 # TODO change this to a enemy projectile sound
-default_projectile_sound = pygame.mixer.Sound("./sound_effects/bulletDefaultSound.wav")
+default_projectile_sound = pygame.mixer.Sound(resource_path("./sound_effects/bulletDefaultSound.wav"))
 
 
 class Enemy:
