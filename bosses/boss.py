@@ -2,15 +2,12 @@ import pygame
 import random
 from projectiles.projectile import Projectile
 from projectiles.zigzag_projectile import ZigzagProjectile
-
-#PROJECTILE_WIDTH = 6
-#PROJECTILE_HEIGHT = 12
-#PROJECTILE_VELOCITY = 1.5
+from utils import resource_path
 
 class Boss:
-    def __init__(self, x, y_offscreen, image_path, projectile_img, projectile_group, screen_width, screen_height, projectile_velocity, movement_pattern, health):
+    def __init__(self, x, y_offscreen, projectile_img, projectile_group, screen_width, screen_height, projectile_velocity, movement_pattern, health):
         super().__init__()
-        original_image = pygame.image.load(image_path)
+        original_image = pygame.image.load(resource_path("./sprites/boss1.png"))
         self.width, self.height = 120, 80
         self.image = pygame.transform.scale(original_image, (self.width, self.height)) 
         self.rect = self.image.get_rect(center=(x, y_offscreen))

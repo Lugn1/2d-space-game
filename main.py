@@ -1,8 +1,7 @@
 import pygame
 import time
 import random 
-import os
-import sys
+from utils import resource_path
 from bosses.boss import Boss
 from player.player import Player
 from movement_patterns.boss_patterns.horizontal_movement import HorizontalMovementPattern
@@ -32,53 +31,45 @@ FONT = pygame.font.SysFont("comicsans", 30)
 
 try:
     # backgrounds
-    BG = pygame.image.load("./img/lvl1bg.jpg")
+    BG = pygame.image.load(resource_path("./img/lvl1bg.jpg"))
     BG = pygame.transform.scale(BG, (WIDTH, HEIGHT))
 
     # ships
-    playerShip = pygame.image.load("./sprites/playerShip.png")
-    enemy1_img = pygame.image.load("./sprites/enemy1.png")
+    playerShip_path = resource_path("./sprites/playerShip.png") 
+    playerShip = pygame.image.load(playerShip_path)
+    enemy1_img = pygame.image.load(resource_path("./sprites/enemy1.png"))
     enemy1_img = pygame.transform.scale(enemy1_img, (45, 30))
-    enemy2_img = pygame.image.load("./sprites/enemy2.png")
+    enemy2_img = pygame.image.load(resource_path("./sprites/enemy2.png"))
     enemy2_img = pygame.transform.scale(enemy2_img, (40, 25))
+    #boss1_path = resource_path("./sprites/boss1.png")
+    #boss1 = pygame.image.load(boss1_path)
 
     # player bullets
-    player_bullet_image = pygame.image.load("./sprites/playerDefaultBullet.png")
+    player_bullet_image = pygame.image.load(resource_path("./sprites/playerDefaultBullet.png"))
     bullet_image = pygame.transform.rotate(player_bullet_image, 90)
 
     # enemy projectiles
-    enemy1_projectile_img = pygame.image.load("./sprites/enemy1_projectile.png")
+    enemy1_projectile_img = pygame.image.load(resource_path("./sprites/enemy1_projectile.png"))
     enemy1_projectile_img = pygame.transform.scale(enemy1_projectile_img, (70, 70))
     enemy1_projectile_img = pygame.transform.rotate(enemy1_projectile_img, -90)
 
-    enemy2_projectile_img = pygame.image.load("./sprites/enemy2_projectile.png")
+    enemy2_projectile_img = pygame.image.load(resource_path("./sprites/enemy2_projectile.png"))
     enemy2_projectile_img = pygame.transform.scale(enemy2_projectile_img, (65, 65))
     enemy2_projectile_img = pygame.transform.rotate(enemy2_projectile_img, -90)
 
     # boss1 projectiles
-    boss1_projectile_img = pygame.image.load("./sprites/enemy1_projectile.png")
+    boss1_projectile_img = pygame.image.load(resource_path("./sprites/enemy1_projectile.png"))
     boss1_projectile_img = pygame.transform.rotate(boss1_projectile_img, -90)
 
     # player lives
-    full_heart_img = pygame.image.load("./img/fullHeart.png")
+    full_heart_img = pygame.image.load(resource_path("./img/fullHeart.png"))
     full_heart = pygame.transform.scale(full_heart_img, (50, 40))
-    empty_heart_img = pygame.image.load("./img/emptyHeart.png")
+    empty_heart_img = pygame.image.load(resource_path("./img/emptyHeart.png"))
     full_heart = pygame.transform.scale(full_heart_img, (40, 30))
     empty_heart = pygame.transform.scale(empty_heart_img, (40, 30))
     
 except Exception as e:
     print("Error loading image", e)
-
-
-def resource_path(relative_path):
-    # Get absolute path to resource, works for dev and for PyInstaller
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 
 
 
@@ -192,7 +183,7 @@ def game_loop():
     # TODO add level complete sound
     win_text = FONT.render("YOU WON!", 1, "white")    
     # place holder sound for game_over
-    game_over_mocking_laugh = pygame.mixer.Sound("./sound_effects/mocking_laugh_1.wav")
+    game_over_mocking_laugh = pygame.mixer.Sound(resource_path("./sound_effects/mocking_laugh_1.wav"))
     # Refresh variables for restart-level
     enemies = []
     bullets = pygame.sprite.Group()
@@ -275,8 +266,8 @@ def game_loop():
         if elapsed_time >= 100 and not boss_fight:
             boss_projectile_velocity = 3 
             horizontal_movement = HorizontalMovementPattern(left_limit = 100, right_limit = WIDTH - 100, velocity = 2, direction_interval = 120)
-            boss_health = 100
-            boss = Boss(WIDTH // 2, -100, "./sprites/boss1.png", boss1_projectile_img, boss_projectiles, WIDTH, HEIGHT, boss_projectile_velocity, horizontal_movement, boss_health) 
+            boss_health = 120
+            boss = Boss(WIDTH // 2, -100, boss1_projectile_img, boss_projectiles, WIDTH, HEIGHT, boss_projectile_velocity, horizontal_movement, boss_health) 
             boss_fight = True
 
         if boss_fight:
