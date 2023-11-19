@@ -41,8 +41,6 @@ try:
     enemy1_img = pygame.transform.scale(enemy1_img, (45, 30))
     enemy2_img = pygame.image.load(resource_path("./sprites/enemy2.png"))
     enemy2_img = pygame.transform.scale(enemy2_img, (40, 25))
-    #boss1_path = resource_path("./sprites/boss1.png")
-    #boss1 = pygame.image.load(boss1_path)
 
     # player bullets
     player_bullet_image = pygame.image.load(resource_path("./sprites/playerDefaultBullet.png"))
