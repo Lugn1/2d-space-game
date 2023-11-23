@@ -6,6 +6,7 @@ from bosses.boss import Boss
 from player.player import Player
 from movement_patterns.boss_patterns.horizontal_movement import HorizontalMovementPattern
 from movement_patterns.enemy_patterns.horizontal_movement import EnemyHorizontalMovementPattern
+from effects.hit_marker import HitMarker
 pygame.font.init()
 pygame.mixer.init()
 
@@ -76,7 +77,7 @@ def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
         heart_img = full_heart if i < player.current_hp else empty_heart
         WIN.blit(heart_img, (start_x, start_y - i * 25))
 
-def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies,game_over, boss=None, fps=0):
+def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, game_over, boss=None, fps=0):
     WIN.blit(BG, (0, 0))
 
     if not game_over:
@@ -103,6 +104,9 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies,g
 
     for projectile in boss_projectiles:
         projectile.draw(WIN)
+
+    for marker in hit_markers: 
+        marker.draw(WIN)   
 
 
     
@@ -187,6 +191,7 @@ def game_loop():
     bullets = pygame.sprite.Group()
     boss_projectiles = pygame.sprite.Group()
     projectiles = []
+    hit_markers = []
    
 
     while run:
@@ -327,6 +332,8 @@ def game_loop():
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
                     print("ENEMY HIT")
+                    new_hit_marker = HitMarker(enemy.x, enemy.y)
+                    hit_markers.append(new_hit_marker)
                     enemies.remove(enemy)
                     bullet.kill()
                     break
@@ -344,7 +351,7 @@ def game_loop():
                         else:
                             projectiles.remove(projectile)    
                         
-        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, game_over, boss=boss, fps=fps)
+        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, game_over, boss=boss, fps=fps)
 
         if game_over:
              pygame.display.update()
