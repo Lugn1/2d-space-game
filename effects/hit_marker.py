@@ -13,7 +13,7 @@ class HitMarker:
             marker_color = (255, 0, 0)  # Red color
             marker_length = 20  # Length of each line segment
             line_thickness = 2  # Thickness of the lines
-            gap = 5  # Gap between the center of the ship and the start of the lines
+            gap = 10  # Gap between the center of the ship and the start of the lines
 
             # Calculate the end points for each line, with a gap from the center
             # Top line
@@ -26,4 +26,4 @@ class HitMarker:
             pygame.draw.line(win, marker_color, (self.x + gap, self.y), (self.x + marker_length + gap, self.y), line_thickness)
 
             # Increment the duration
-            self.current_duration += 1
+        self.current_duration += 1
