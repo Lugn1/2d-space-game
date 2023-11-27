@@ -10,10 +10,20 @@ class HitMarker:
 
     def draw(self, win):
         if self.current_duration < self.duration:
-            marker_color = (255, 0, 0)
-            marker_length = 10
-            pygame.draw.line(win, marker_color, (self.x, self.y), (self.x + marker_length, self.y), 2)  # Top line
-            pygame.draw.line(win, marker_color, (self.x, self.y), (self.x, self.y + marker_length), 2)  # Left line
-            pygame.draw.line(win, marker_color, (self.x + marker_length, self.y), (self.x, self.y), 2)  # Bottom line
-            pygame.draw.line(win, marker_color, (self.x, self.y + marker_length), (self.x, self.y), 2)  # Right line
+            marker_color = (255, 0, 0)  # Red color
+            marker_length = 20  # Length of each line segment
+            line_thickness = 2  # Thickness of the lines
+            gap = 5  # Gap between the center of the ship and the start of the lines
+
+            # Calculate the end points for each line, with a gap from the center
+            # Top line
+            pygame.draw.line(win, marker_color, (self.x, self.y - gap), (self.x, self.y - marker_length - gap), line_thickness)
+            # Bottom line
+            pygame.draw.line(win, marker_color, (self.x, self.y + gap), (self.x, self.y + marker_length + gap), line_thickness)
+            # Left line
+            pygame.draw.line(win, marker_color, (self.x - gap, self.y), (self.x - marker_length - gap, self.y), line_thickness)
+            # Right line
+            pygame.draw.line(win, marker_color, (self.x + gap, self.y), (self.x + marker_length + gap, self.y), line_thickness)
+
+            # Increment the duration
             self.current_duration += 1

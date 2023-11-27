@@ -103,11 +103,10 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
         #pygame.draw.rect(WIN, "red", projectile)
 
     for projectile in boss_projectiles:
-        projectile.draw(WIN)
+        projectile.draw(WIN)  
 
-    for marker in hit_markers: 
-        marker.draw(WIN)   
-
+    for hit_marker in hit_markers:
+        hit_marker.draw(WIN)    
 
     
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")
@@ -332,8 +331,6 @@ def game_loop():
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
                     print("ENEMY HIT")
-                    new_hit_marker = HitMarker(enemy.x, enemy.y)
-                    hit_markers.append(new_hit_marker)
                     enemies.remove(enemy)
                     bullet.kill()
                     break
@@ -345,6 +342,8 @@ def game_loop():
             elif projectile.rect.colliderect(player):
                 if not player.game_over:
                         player.is_hit()
+                        new_hit_marker = HitMarker(player.rect.x, player.rect.y)
+                        hit_markers.append(new_hit_marker)
                         print("Player hit. Current HP:", player.current_hp)
                         if player.current_hp <= 0:
                             game_over = True
