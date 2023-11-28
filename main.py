@@ -159,6 +159,9 @@ def pause_menu(screen):
         pygame.display.update()
         clock.tick(60)
 
+    
+
+
 def game_loop():
     from enemies.enemy import Enemy
     run = True
@@ -432,6 +435,14 @@ def main_menu(screen):
 
         pygame.display.update()
         clock.tick(60)
+
+def level2():
+    # TODO add level 2 loop
+    from enemies.enemy import Enemy    
+
+def level3():
+    # TODO add level 3 loop
+    from enemies.enemy import Enemy
 
 def main():
     pygame.init()
