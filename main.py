@@ -85,10 +85,7 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     global bg_y, bg2_y
     WIN.blit(BG, (0, bg_y))
     WIN.blit(BG2, (0, bg2_y))
-    #WIN.blit(BG, (0, 0))
 
-
-      # TODO add moving background  
     if not game_over:
         draw_hearts(player, full_heart, empty_heart, WIDTH - WIDTH + 10, HEIGHT - 70)
   
