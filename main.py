@@ -34,6 +34,10 @@ try:
     # backgrounds
     BG = pygame.image.load(resource_path("./img/lvl1bg.jpg"))
     BG = pygame.transform.scale(BG, (WIDTH, HEIGHT))
+    BG2 = BG
+    # stack two backgrounds on top of each other
+    bg_y = 0
+    bg2_y = -HEIGHT
 
     # ships
     playerShip_path = resource_path("./sprites/playerShip.png") 
@@ -78,7 +82,10 @@ def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
         WIN.blit(heart_img, (start_x, start_y - i * 25))
 
 def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, game_over, boss=None, fps=0):
-    WIN.blit(BG, (0, 0))
+    global bg_y, bg2_y
+    WIN.blit(BG, (0, bg_y))
+    WIN.blit(BG2, (0, bg2_y))
+    #WIN.blit(BG, (0, 0))
 
 
       # TODO add moving background  
@@ -172,6 +179,10 @@ def game_loop():
     start_time = time.time()
     elapsed_time = 0
     global bullet_image
+    # bg - background 
+    global bg_y, bg2_y
+    bg_speed = 2
+
     # enemies spawn interval
     enemy_spawn_increment = 1500
     enemy2_spawn_increment = 7000 
@@ -206,6 +217,16 @@ def game_loop():
         bullets.update()
         keys = pygame.key.get_pressed()
         
+        # Move the background
+        bg_y += bg_speed
+        bg2_y += bg_speed
+
+        # reset background position if off screen
+        if bg_y >= HEIGHT:
+            bg_y = -HEIGHT
+        if bg2_y >= HEIGHT:
+            bg2_y = -HEIGHT    
+
 
         time_thresholds = [
             (0, 1500),
