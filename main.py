@@ -365,14 +365,21 @@ def game_loop():
             elif projectile.rect.colliderect(player):
                 if not player.game_over:
                         player.is_hit()
-                        new_hit_marker = HitMarker(player.rect.x, player.rect.y)
+                        new_hit_marker = HitMarker(player.rect.x, player.rect.y, PLAYER_WIDTH, PLAYER_HEIGHT)
                         hit_markers.append(new_hit_marker)
                         print("Player hit. Current HP:", player.current_hp)
                         if player.current_hp <= 0:
                             game_over = True
                         else:
                             projectiles.remove(projectile)    
-                        
+
+        for enemy in enemies[:]:
+            if player.rect.colliderect(enemy.rect):
+                print("Player crashed enemy ship")
+                player.is_hit()
+                enemies.remove(enemy)
+                break
+            
         draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, game_over, boss=boss, fps=fps)
 
         if game_over:
