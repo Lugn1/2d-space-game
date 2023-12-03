@@ -2,11 +2,13 @@ import pygame
 import time
 import random 
 from utils import resource_path
+from utils.animation import Animation
 from bosses.boss import Boss
 from player.player import Player
 from movement_patterns.boss_patterns.horizontal_movement import HorizontalMovementPattern
 from movement_patterns.enemy_patterns.horizontal_movement import EnemyHorizontalMovementPattern
 from effects.hit_marker import HitMarker
+
 pygame.font.init()
 pygame.mixer.init()
 
@@ -70,7 +72,13 @@ try:
     empty_heart_img = pygame.image.load(resource_path("./img/emptyHeart.png"))
     full_heart = pygame.transform.scale(full_heart_img, (40, 30))
     empty_heart = pygame.transform.scale(empty_heart_img, (40, 30))
-    
+
+    # explosion1
+    explosion1_rows, explosion1_cols = 5, 5
+    explosion1_img = pygame.image.load(resource_path("./img/explosion1.png"))
+    explosion1_width = explosion1_img.get_width() // explosion1_cols
+    explosion1_height = explosion1_img.get_height() // explosion1_rows
+
 except Exception as e:
     print("Error loading image", e)
 
@@ -81,7 +89,7 @@ def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
         heart_img = full_heart if i < player.current_hp else empty_heart
         WIN.blit(heart_img, (start_x, start_y - i * 25))
 
-def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, game_over, boss=None, fps=0):
+def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, explosions, game_over, boss=None, fps=0):
     global bg_y, bg2_y
     WIN.blit(BG, (0, bg_y))
     WIN.blit(BG2, (0, bg2_y))
@@ -114,6 +122,10 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     for hit_marker in hit_markers:
         hit_marker.draw(WIN)    
 
+    for explosion in explosions[:]:
+        explosion.draw(WIN)
+        if explosion.done:
+            explosions.remove(explosion)
     
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")
     WIN.blit(time_text, (10, 10))
@@ -204,6 +216,7 @@ def game_loop():
     boss_projectiles = pygame.sprite.Group()
     projectiles = []
     hit_markers = []
+    explosions = []
    
 
     while run:
@@ -353,6 +366,8 @@ def game_loop():
         for bullet in bullets: 
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
+                    explosion1 = Animation(explosion1_img, explosion1_rows, explosion1_cols, enemy.rect.centerx, enemy.rect.centery, explosion1_width, explosion1_height)
+                    explosions.append(explosion1)
                     print("ENEMY HIT")
                     enemies.remove(enemy)
                     bullet.kill()
@@ -380,7 +395,7 @@ def game_loop():
                 enemies.remove(enemy)
                 break
             
-        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, game_over, boss=boss, fps=fps)
+        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, explosions, game_over, boss=boss, fps=fps)
 
         if game_over:
              pygame.display.update()

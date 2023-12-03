@@ -1,5 +1,7 @@
 import pygame
-
+# TODO fix this 
+# TODO fix import
+# Todo fix folder name
 class Animation:
     def __init__(self, img, row, col, x, y, width, height):
         self.frames = [img.subsurface((i * width, j * height, width, height))
