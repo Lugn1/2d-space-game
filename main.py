@@ -2,12 +2,12 @@ import pygame
 import time
 import random 
 from utils.resourcePath import resource_path
-from utils.animation import Animation
 from bosses.boss import Boss
 from player.player import Player
 from movement_patterns.boss_patterns.horizontal_movement import HorizontalMovementPattern
 from movement_patterns.enemy_patterns.horizontal_movement import EnemyHorizontalMovementPattern
 from effects.hit_marker import HitMarker
+from animations.sprite_sheet_animation import SpriteSheetAnimation
 
 pygame.font.init()
 pygame.mixer.init()
@@ -74,7 +74,7 @@ try:
     empty_heart = pygame.transform.scale(empty_heart_img, (40, 30))
 
     # explosion1
-    explosion1_rows, explosion1_cols = 5, 5
+    explosion1_rows, explosion1_cols = 8, 7
     explosion1_img = pygame.image.load(resource_path("./img/explosion1.png"))
     explosion1_width = explosion1_img.get_width() // explosion1_cols
     explosion1_height = explosion1_img.get_height() // explosion1_rows
@@ -123,6 +123,7 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
         hit_marker.draw(WIN)    
 
     for explosion in explosions[:]:
+        explosion.update()
         explosion.draw(WIN)
         if explosion.done:
             explosions.remove(explosion)
@@ -366,7 +367,7 @@ def game_loop():
         for bullet in bullets: 
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
-                    explosion1 = Animation(explosion1_img, explosion1_rows, explosion1_cols, enemy.rect.centerx, enemy.rect.centery, explosion1_width, explosion1_height)
+                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, (enemy.rect.centerx, enemy.rect.centery), frame_rate=60, loop=False)
                     explosions.append(explosion1)
                     print("ENEMY HIT")
                     enemies.remove(enemy)
