@@ -31,7 +31,6 @@ pygame.display.set_caption("Space game")
 FONT = pygame.font.SysFont("comicsans", 30)
 
 
-
 try:
     # backgrounds
     BG = pygame.image.load(resource_path("./img/lvl1bg.jpg"))
@@ -82,8 +81,6 @@ try:
 except Exception as e:
     print("Error loading image", e)
 
-
-
 def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
     for i in range(player.lives):
         heart_img = full_heart if i < player.current_hp else empty_heart
@@ -125,7 +122,7 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     for explosion in explosions[:]:
         explosion.update()
         explosion.draw(WIN)
-        if explosion.done:
+        if explosion.completed:
             explosions.remove(explosion)
     
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")

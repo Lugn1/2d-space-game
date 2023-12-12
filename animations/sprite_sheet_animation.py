@@ -28,15 +28,18 @@ class SpriteSheetAnimation:
 
     def update(self):
         if not self.completed:
-            if pygame.time.get_ticks() - self.start_time >= self.frame_rate:
+        # Update the time and change the frame.
+            current_time = pygame.time.get_ticks()
+            if current_time - self.start_time >= self.frame_rate:
                 self.current_frame += 1
-                self.start_time = pygame.time.get_ticks()
+                self.start_time = current_time
                 if self.current_frame >= self.total_frames:
                     if self.loop:
                         self.current_frame = 0
                     else:
-                        self.current_frame -= 1
-                        self.completed = True         
+                        self.current_frame = self.total_frames - 1  # Stay on the last frame
+                        self.completed = True
+        
 
     def draw(self, surface):
         if not self.completed:
