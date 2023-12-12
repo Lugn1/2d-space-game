@@ -1,6 +1,6 @@
 import pygame
 from projectiles.bullet import Bullet
-from utils import resource_path
+from utils.resourcePath import resource_path
 
 pygame.init()
 bullet_sound = pygame.mixer.Sound(resource_path("./sound_effects/bulletDefaultSound.wav"))

@@ -2,7 +2,7 @@ import pygame
 import random
 from projectiles.projectile import Projectile
 from projectiles.zigzag_projectile import ZigzagProjectile
-from utils import resource_path
+from utils.resourcePath import resource_path
 
 class Boss:
     def __init__(self, x, y_offscreen, projectile_img, projectile_group, screen_width, screen_height, projectile_velocity, movement_pattern, health):

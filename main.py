@@ -1,7 +1,7 @@
 import pygame
 import time
 import random 
-from utils import resource_path
+from utils.resourcePath import resource_path
 from utils.animation import Animation
 from bosses.boss import Boss
 from player.player import Player

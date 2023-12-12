@@ -1,6 +1,6 @@
 import pygame
 from projectiles.projectile import Projectile
-from utils import resource_path
+from utils.resourcePath import resource_path
 
 pygame.init()
 # TODO change this to a enemy projectile sound
