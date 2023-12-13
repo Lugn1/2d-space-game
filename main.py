@@ -188,7 +188,8 @@ def game_loop():
     global bullet_image
     # bg - background 
     global bg_y, bg2_y
-    bg_speed = 2
+    bg_speed = 1
+    total_bg_movement = 0
 
     # enemies spawn interval
     enemy_spawn_increment = 1500

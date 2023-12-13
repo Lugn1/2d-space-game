@@ -8,13 +8,12 @@ class SpriteSheetAnimation:
         self.frame_rate = frame_rate
         self.loop = loop
         self.scale = scale
-
+        
         if self.scale != 1:
             img_width, img_height = img.get_size()
             img = pygame.transform.scale(img, (int(img_width * self.scale), int(img_height * self.scale)))
-            
-        self.img = img
 
+        self.img = img
         self.total_frames = self.rows * self.cols
         self.frame_width = self.img.get_width() // self.cols
         self.frame_height = self.img.get_height() // self.rows
