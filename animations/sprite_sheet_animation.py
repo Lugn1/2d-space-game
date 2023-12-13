@@ -1,13 +1,19 @@
 import pygame
 
 class SpriteSheetAnimation:
-    def __init__(self, img, rows, cols, position, frame_rate=60, loop=True):
-        self.img = img
+    def __init__(self, img, rows, cols, position, frame_rate=60, loop=True, scale=1):
         self.rows = rows
         self.cols = cols
         self.position = position
         self.frame_rate = frame_rate
         self.loop = loop
+        self.scale = scale
+
+        if self.scale != 1:
+            img_width, img_height = img.get_size()
+            img = pygame.transform.scale(img, (int(img_width * self.scale), int(img_height * self.scale)))
+            
+        self.img = img
 
         self.total_frames = self.rows * self.cols
         self.frame_width = self.img.get_width() // self.cols

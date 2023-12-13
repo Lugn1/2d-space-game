@@ -96,6 +96,7 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     player.draw_dash_tracker(WIN)
     player.draw(WIN)
 
+
     for enemy in enemies:
         enemy.draw(WIN)
     
@@ -364,7 +365,7 @@ def game_loop():
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
                     explosion1_pos = (enemy.rect.centerx, enemy.rect.centery)
-                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False)
+                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
                     explosions.append(explosion1)
                     print("ENEMY HIT")
                     enemies.remove(enemy)
