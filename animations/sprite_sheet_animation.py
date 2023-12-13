@@ -43,5 +43,8 @@ class SpriteSheetAnimation:
 
     def draw(self, surface):
         if not self.completed:
+            top_left_pos = (self.position[0] - self.frame_width // 2, self.position[1] - self.frame_height // 2)
             frame = self.frames[self.current_frame]
-            surface.blit(frame, self.position)
+            surface.blit(frame, top_left_pos)
+
+    

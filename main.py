@@ -75,8 +75,7 @@ try:
     # explosion1
     explosion1_rows, explosion1_cols = 8, 8
     explosion1_img = pygame.image.load(resource_path("./img/explosion1.png"))
-    explosion1_width = explosion1_img.get_width() // explosion1_cols
-    explosion1_height = explosion1_img.get_height() // explosion1_rows
+
 
 except Exception as e:
     print("Error loading image", e)
@@ -364,7 +363,8 @@ def game_loop():
         for bullet in bullets: 
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
-                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, (enemy.rect.topleft, enemy.rect.topleft), frame_rate=10, loop=False)
+                    explosion1_pos = (enemy.rect.centerx, enemy.rect.centery)
+                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False)
                     explosions.append(explosion1)
                     print("ENEMY HIT")
                     enemies.remove(enemy)
