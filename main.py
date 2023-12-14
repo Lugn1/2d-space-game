@@ -177,7 +177,6 @@ def pause_menu(screen):
 
     
 
-
 def game_loop():
     from enemies.enemy import Enemy
     run = True
@@ -189,7 +188,6 @@ def game_loop():
     # bg - background 
     global bg_y, bg2_y
     bg_speed = 1
-    total_bg_movement = 0
 
     # enemies spawn interval
     enemy_spawn_increment = 1500
@@ -300,7 +298,7 @@ def game_loop():
 
         
         # spawn boss
-        if elapsed_time >= 100 and not boss_fight:
+        if elapsed_time >= 1 and not boss_fight:
             boss_projectile_velocity = 3 
             horizontal_movement = HorizontalMovementPattern(left_limit = 100, right_limit = WIDTH - 100, velocity = 2, direction_interval = 120)
             boss_health = 120
@@ -328,6 +326,9 @@ def game_loop():
 
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
+                    explosion1_pos = (boss.rect.centerx, boss.rect.centery)
+                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                    explosions.append(explosion1)
                     bullet.kill()
                     print("Bullet hit boss")
                     if boss.take_damage(5):
