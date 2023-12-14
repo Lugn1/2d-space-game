@@ -306,7 +306,7 @@ def game_loop():
             boss_fight = True
 
         if boss_fight:
-            boss.update()
+            boss.update(boss.health_percentage)
             boss.draw(WIN)
     
         if boss and not boss.moving_in:

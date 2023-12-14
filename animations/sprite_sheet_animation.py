@@ -1,7 +1,7 @@
 import pygame
 
 class SpriteSheetAnimation:
-    def __init__(self, img, rows, cols, position, frame_rate=60, loop=True, scale=1):
+    def __init__(self, img, rows, cols, position, frame_rate=60, loop=True, scale=1, health_based=False):
         self.rows = rows
         self.cols = cols
         self.position = position
@@ -21,6 +21,18 @@ class SpriteSheetAnimation:
         self.current_frame = 0 
         self.start_time = pygame.time.get_ticks()
         self.completed = False
+        self.health_based = health_based
+
+        if self.health_based:
+            self.health_frame_ranges = {
+                "high": range(0, 10),
+                "medium": range(10, 20),
+                "low": range(20, 30),
+                "critical": range(30, 40)
+            }
+            self.current_frame_range = self.health_frame_ranges["high"]
+        else:
+            self.current_frame_range = range(0, self.total_frames)    
 
     def create_frames(self):
         frames = []
@@ -31,7 +43,26 @@ class SpriteSheetAnimation:
         return frames  
 
 
-    def update(self):
+    def update(self, health_percentage=None):
+        if self.health_based and health_percentage is not None:
+            if self.health_based and health_percentage is not None:
+            # Determine the frame range based on the entity's health
+                if health_percentage > 75:
+                    self.current_frame_range = self.health_frame_ranges["high"]
+                elif health_percentage > 50:
+                    self.current_frame_range = self.health_frame_ranges["medium"]
+                elif health_percentage > 25:
+                    self.current_frame_range = self.health_frame_ranges["low"]
+                else:
+                    self.current_frame_range = self.health_frame_ranges["critical"]
+
+            # Update the current frame within the selected range
+            self.current_frame = (self.current_frame + 1) % len(self.current_frame_range)
+            self.current_frame_index = self.current_frame_range[self.current_frame]
+        else:
+            # Regular animation logic (if not health-based)
+            self.current_frame = (self.current_frame + 1) % self.total_frames
+            self.current_frame_index = self.current_frame
         if not self.completed:
         # Update the time and change the frame.
             current_time = pygame.time.get_ticks()
