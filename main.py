@@ -119,8 +119,10 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     for hit_marker in hit_markers:
         hit_marker.draw(WIN)    
 
+    boss_health_percentage = boss.get_health_percentage() if boss else 100
+
     for explosion in explosions[:]:
-        explosion.update()
+        explosion.update(boss_health_percentage)
         explosion.draw(WIN)
         if explosion.completed:
             explosions.remove(explosion)
@@ -325,7 +327,7 @@ def game_loop():
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
                     explosion1_pos = (boss.rect.centerx, boss.rect.centery)
-                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5, health_based=True)
                     explosions.append(explosion1)
                     bullet.kill()
                     print("Bullet hit boss")

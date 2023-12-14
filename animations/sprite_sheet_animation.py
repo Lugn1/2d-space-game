@@ -44,35 +44,32 @@ class SpriteSheetAnimation:
 
 
     def update(self, health_percentage=None):
-        if not self.completed:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.start_time >= self.frame_rate:
-                self.current_frame += 1
-                self.start_time = current_time
-                if self.health_based and health_percentage is not None:
-                    # Determine the frame range based on the entity's health
-                    if health_percentage > 75:
-                        self.current_frame_range = self.health_frame_ranges["high"]
-                    elif health_percentage > 50:
-                        self.current_frame_range = self.health_frame_ranges["medium"]
-                    elif health_percentage > 25:
-                        self.current_frame_range = self.health_frame_ranges["low"]
-                    else:
-                        self.current_frame_range = self.health_frame_ranges["critical"]
-
-                    # Update the current frame within the selected range
-                    if self.current_frame >= len(self.current_frame_range):
-                        self.current_frame = 0  # Reset to the first frame of the current range
-                        if not self.loop:
-                            self.completed = True
-                            self.current_frame = len(self.current_frame_range) - 1  # Stay on the last frame
+        current_time = pygame.time.get_ticks()
+        if current_time - self.start_time >= self.frame_rate:
+            if self.health_based and health_percentage is not None:
+                # Update frame range based on health_percentage
+                if health_percentage > 75:
+                    self.current_frame_range = self.health_frame_ranges["high"]
+                elif health_percentage > 50:
+                    self.current_frame_range = self.health_frame_ranges["medium"]
+                elif health_percentage > 25:
+                    self.current_frame_range = self.health_frame_ranges["low"]
                 else:
-                    # Regular animation logic (if not health-based)
-                    if self.current_frame >= self.total_frames:
-                        self.current_frame = 0  # Reset to the first frame
-                        if not self.loop:
-                            self.completed = True
-                            self.current_frame = self.total_frames - 1  # Stay on the last frame
+                    self.current_frame_range = self.health_frame_ranges["critical"]
+
+            # Update the current frame within the selected range
+                self.current_frame = (self.current_frame + 1) % len(self.current_frame_range)
+                self.current_frame_index = list(self.current_frame_range)[self.current_frame]
+            else:
+            # Regular animation logic (if not health-based)
+                self.current_frame = (self.current_frame + 1) % self.total_frames
+                self.current_frame_index = self.current_frame
+
+            self.start_time = current_time
+
+            if not self.loop and self.current_frame == 0:
+                self.completed = True
+
         
 
     def draw(self, surface):
