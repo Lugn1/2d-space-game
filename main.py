@@ -316,9 +316,7 @@ def game_loop():
 
             if boss.move_projectiles(PROJECTILE_VELOCITY, player):
                 player_hit = player.is_hit() 
-                game_over = player.current_hp <= 0 #False 
-                    # TODO god-mode, for development 
-                    #game_over = False      
+                game_over = player.current_hp <= -1000   # TODO back to 0
                 if game_over:
                     print("player killed by boss") 
                 elif player_hit:
@@ -326,9 +324,9 @@ def game_loop():
 
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
-                    #explosion1_pos = (boss.rect.centerx, boss.rect.centery)
-                   # explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
-                    #explosions.append(explosion1)
+                    explosion1_pos = (boss.rect.centerx, boss.rect.centery)
+                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                    explosions.append(explosion1)
                     bullet.kill()
                     print("Bullet hit boss")
                     if boss.take_damage(5):
