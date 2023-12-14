@@ -44,7 +44,6 @@ class Boss:
             self.attack_timer = 0
 
     def update(self):
-
         self.hitbox.x = self.rect.x
         self.hitbox.y = self.rect.y
 
@@ -101,6 +100,10 @@ class Boss:
         return self.current_health <= 0
         #self.health -= damage
         #return self.health <= 0   
+
+
+    def get_health_percentage(self):
+        return (self.current_health/self.max_health) * 100    
     
 
 

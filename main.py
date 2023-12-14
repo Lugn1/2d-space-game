@@ -306,7 +306,7 @@ def game_loop():
             boss_fight = True
 
         if boss_fight:
-            boss.update(boss.health_percentage)
+            boss.update()
             boss.draw(WIN)
     
         if boss and not boss.moving_in:
@@ -326,9 +326,9 @@ def game_loop():
 
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
-                    explosion1_pos = (boss.rect.centerx, boss.rect.centery)
-                    explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
-                    explosions.append(explosion1)
+                    #explosion1_pos = (boss.rect.centerx, boss.rect.centery)
+                   # explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                    #explosions.append(explosion1)
                     bullet.kill()
                     print("Bullet hit boss")
                     if boss.take_damage(5):
