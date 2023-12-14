@@ -18,8 +18,8 @@ class ZigzagProjectile(Projectile):
         if self.tick_counter >= self.switch_direction_tick:
             self.direction *= -1
             self.switch_direction_tick += self.frequency
-            print(f"Direction changed to {self.direction}")  # Debugging print
+        
         
         self.rect.x += self.amplitude * self.direction
         self.tick_counter += 1        
-        print(f"Tick: {self.tick_counter}, X: {self.rect.x}")  # Debugging print
+    

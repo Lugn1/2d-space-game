@@ -326,8 +326,10 @@ def game_loop():
 
             for bullet in bullets:
                 if bullet.rect.colliderect(boss.hitbox):
+                    health_percentage = boss.get_health_percentage
                     explosion1_pos = (boss.rect.centerx, boss.rect.centery)
                     explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5, health_based=True)
+                    explosion1.update(health_percentage)
                     explosions.append(explosion1)
                     bullet.kill()
                     print("Bullet hit boss")
@@ -366,8 +368,10 @@ def game_loop():
         for bullet in bullets: 
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
+                    
                     explosion1_pos = (enemy.rect.centerx, enemy.rect.centery)
                     explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                    
                     explosions.append(explosion1)
                     print("ENEMY HIT")
                     enemies.remove(enemy)
@@ -384,7 +388,7 @@ def game_loop():
                         new_hit_marker = HitMarker(player.rect.x, player.rect.y, PLAYER_WIDTH, PLAYER_HEIGHT)
                         hit_markers.append(new_hit_marker)
                         print("Player hit. Current HP:", player.current_hp)
-                        if player.current_hp <= 0:
+                        if player.current_hp <= -1000: # TODO change to 0
                             game_over = True
                         else:
                             projectiles.remove(projectile)    

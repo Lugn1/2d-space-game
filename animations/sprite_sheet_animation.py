@@ -25,10 +25,10 @@ class SpriteSheetAnimation:
 
         if self.health_based:
             self.health_frame_ranges = {
-                "high": range(0, 10),
-                "medium": range(10, 20),
-                "low": range(20, 30),
-                "critical": range(30, 40)
+                "high": range(56, 64),
+                "medium": range(16, 24),
+                "low": range(8, 16),
+                "critical": range(0, 8)
             }
             self.current_frame_range = self.health_frame_ranges["high"]
         else:
@@ -46,8 +46,8 @@ class SpriteSheetAnimation:
     def update(self, health_percentage=None):
         current_time = pygame.time.get_ticks()
         if current_time - self.start_time >= self.frame_rate:
+        # Logic to determine the frame range based on health_percentage
             if self.health_based and health_percentage is not None:
-                # Update frame range based on health_percentage
                 if health_percentage > 75:
                     self.current_frame_range = self.health_frame_ranges["high"]
                 elif health_percentage > 50:
@@ -57,20 +57,16 @@ class SpriteSheetAnimation:
                 else:
                     self.current_frame_range = self.health_frame_ranges["critical"]
 
-            # Update the current frame within the selected range
-                self.current_frame = (self.current_frame + 1) % len(self.current_frame_range)
-                self.current_frame_index = list(self.current_frame_range)[self.current_frame]
+                self.current_frame_index = (self.current_frame_index + 1) % len(self.current_frame_range)
+                self.current_frame = list(self.current_frame_range)[self.current_frame_index]
             else:
             # Regular animation logic (if not health-based)
                 self.current_frame = (self.current_frame + 1) % self.total_frames
-                self.current_frame_index = self.current_frame
 
             self.start_time = current_time
-
             if not self.loop and self.current_frame == 0:
                 self.completed = True
 
-        
 
     def draw(self, surface):
         if not self.completed:
