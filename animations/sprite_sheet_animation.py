@@ -19,6 +19,7 @@ class SpriteSheetAnimation:
         self.frame_height = self.img.get_height() // self.rows
         self.frames = self.create_frames()
         self.current_frame = 0 
+        self.current_frame_index = 0
         self.start_time = pygame.time.get_ticks()
         self.completed = False
         self.health_based = health_based
@@ -59,6 +60,9 @@ class SpriteSheetAnimation:
 
                 self.current_frame_index = (self.current_frame_index + 1) % len(self.current_frame_range)
                 self.current_frame = list(self.current_frame_range)[self.current_frame_index]
+
+                if self.current_frame_index == len(self.current_frame_range) - 1:
+                    self.completed = True
             else:
             # Regular animation logic (if not health-based)
                 self.current_frame = (self.current_frame + 1) % self.total_frames
