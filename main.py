@@ -300,7 +300,7 @@ def game_loop():
 
         
         # spawn boss
-        if elapsed_time >= 1 and not boss_fight:
+        if elapsed_time >= 100 and not boss_fight:
             boss_projectile_velocity = 3 
             horizontal_movement = HorizontalMovementPattern(left_limit = 100, right_limit = WIDTH - 100, velocity = 2, direction_interval = 120)
             boss_health = 120
