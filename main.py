@@ -368,10 +368,8 @@ def game_loop():
         for bullet in bullets: 
             for enemy in enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
-                    
                     explosion1_pos = (enemy.rect.centerx, enemy.rect.centery)
                     explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
-                    
                     explosions.append(explosion1)
                     print("ENEMY HIT")
                     enemies.remove(enemy)
@@ -395,6 +393,9 @@ def game_loop():
 
         for enemy in enemies[:]:
             if player.rect.colliderect(enemy.rect):
+                explosion1_pos = (enemy.rect.centerx, enemy.rect.centery)
+                explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                explosions.append(explosion1)
                 print("Player crashed enemy ship")
                 player.is_hit()
                 enemies.remove(enemy)
@@ -482,14 +483,6 @@ def main_menu(screen):
 
         pygame.display.update()
         clock.tick(60)
-
-def level2():
-    # TODO add level 2 loop
-    from enemies.enemy import Enemy    
-
-def level3():
-    # TODO add level 3 loop
-    from enemies.enemy import Enemy
 
 def main():
     pygame.init()
