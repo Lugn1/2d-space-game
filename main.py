@@ -383,8 +383,11 @@ def game_loop():
             elif projectile.rect.colliderect(player):
                 if not player.game_over:
                         player.is_hit()
-                        new_hit_marker = HitMarker(player.rect.x, player.rect.y, PLAYER_WIDTH, PLAYER_HEIGHT)
-                        hit_markers.append(new_hit_marker)
+                        explosion1_pos = (player.rect.x, player.rect.y, PLAYER_WIDTH, PLAYER_HEIGHT)
+                        explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                        explosions.append(explosion1)
+                        #new_hit_marker = HitMarker(player.rect.x, player.rect.y, PLAYER_WIDTH, PLAYER_HEIGHT)
+                        #hit_markers.append(new_hit_marker)
                         print("Player hit. Current HP:", player.current_hp)
                         if player.current_hp <= -1000: # TODO change to 0
                             game_over = True

@@ -87,20 +87,10 @@ class Boss:
         # draw current health
         pygame.draw.rect(screen, self.health_bar_color, [self.health_bar_x, self.health_bar_y, current_bar_width, self.health_bar_height])
 
-        # Draw the hitbox for debugging
-        #pygame.draw.rect(screen, (0, 255, 0), self.rect, 1)
-
-    # def move(self):
-    #     self.x += self.velocity
-
-
     def take_damage(self, damage):
         self.current_health -= damage
         self.current_health = max(self.current_health, 0)
-        return self.current_health <= 0
-        #self.health -= damage
-        #return self.health <= 0   
-
+        return self.current_health <= 0  
 
     def get_health_percentage(self):
         return (self.current_health/self.max_health) * 100    
