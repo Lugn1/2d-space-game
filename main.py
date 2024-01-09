@@ -396,6 +396,9 @@ def game_loop():
 
         for enemy in enemies[:]:
             if player.rect.colliderect(enemy.rect):
+                explosion1_pos = (player.rect.x, player.rect.y, PLAYER_WIDTH, PLAYER_HEIGHT)
+                explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
+                explosions.append(explosion1)
                 explosion1_pos = (enemy.rect.centerx, enemy.rect.centery)
                 explosion1 = SpriteSheetAnimation(explosion1_img, explosion1_rows, explosion1_cols, explosion1_pos, frame_rate=10, loop=False, scale=0.5)
                 explosions.append(explosion1)
