@@ -1,4 +1,5 @@
 import pygame
+import math
 from projectiles.bullet import Bullet
 from utils.resourcePath import resource_path
 
@@ -39,6 +40,11 @@ class Player:
 
     def move(self, keys):
 
+        moving_horizontally = (keys[pygame.K_a] or keys[pygame.K_LEFT]) or (keys[pygame.K_d] or keys[pygame.K_RIGHT])
+        moving_vertically = (keys[pygame.K_w] or keys[pygame.K_UP]) or (keys[pygame.K_s] or keys[pygame.K_DOWN])
+
+        is_diagonal = moving_horizontally and moving_vertically
+
         # add dash
         if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
             if not self.is_dashing and self.dash_timer == 0:
@@ -46,14 +52,11 @@ class Player:
                 self.is_dashing = True
                 self.dash_timer = self.dash_duration
         # current speed bases on dash or not
-        current_velocity = self.dash_velocity if self.is_dashing else self.velocity   
-
-        # if self.rect.right < 0:
-        #     self.rect.left = self.screen_width
-        #     dash_sound.play()
-        # elif self.rect.left > self.screen_width:
-        #     self.rect.right = 0   
-        #     dash_sound.play()  
+        current_velocity = self.dash_velocity if self.is_dashing else self.velocity  
+        # Adjust speed for diagonal movement 
+        if is_diagonal:
+            current_velocity /= math.sqrt(2)
+    
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]):
             self.rect.x = max(0, self.rect.x - current_velocity)
