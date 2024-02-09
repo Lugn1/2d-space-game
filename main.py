@@ -389,7 +389,7 @@ def game_loop():
                         #new_hit_marker = HitMarker(player.rect.x, player.rect.y, PLAYER_WIDTH, PLAYER_HEIGHT)
                         #hit_markers.append(new_hit_marker)
                         print("Player hit. Current HP:", player.current_hp)
-                        if player.current_hp <= -1000: # TODO change to 0
+                        if player.current_hp <= 0:
                             game_over = True
                         else:
                             projectiles.remove(projectile)    
