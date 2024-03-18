@@ -85,7 +85,7 @@ def draw_hearts(player, full_heart, empty_heart, start_x, start_y):
         heart_img = full_heart if i < player.current_hp else empty_heart
         WIN.blit(heart_img, (start_x, start_y - i * 25))
 
-def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, explosions, game_over, boss=None, fps=0):
+def draw(player, elapsed_time, player_score, projectiles, bullets, boss_projectiles, enemies, hit_markers, explosions, game_over, boss=None, fps=0):
     global bg_y, bg2_y
     WIN.blit(BG, (0, bg_y))
     WIN.blit(BG2, (0, bg2_y))
@@ -129,6 +129,9 @@ def draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, 
     
     time_text = FONT.render(F"Time: {round(elapsed_time)}", 1, "white")
     WIN.blit(time_text, (10, 10))
+
+    score_text = FONT.render(F"Score: {round(player_score)}", 1, "white")
+    WIN.blit(score_text, (1450, 10))
 
     fps_small_font = pygame.font.Font(None, 32)
     fps_text = fps_small_font.render(f"{int(fps)}", 1, (255, 255, 255))
@@ -186,6 +189,7 @@ def game_loop():
     clock = pygame.time.Clock()
     start_time = time.time()
     elapsed_time = 0
+    player_score = 0
     global bullet_image
     # bg - background 
     global bg_y, bg2_y
@@ -373,6 +377,7 @@ def game_loop():
                     explosions.append(explosion1)
                     print("ENEMY HIT")
                     enemies.remove(enemy)
+                    player_score = player_score + 1
                     bullet.kill()
                     break
 
@@ -407,7 +412,7 @@ def game_loop():
                 enemies.remove(enemy)
                 break
             
-        draw(player, elapsed_time, projectiles, bullets, boss_projectiles, enemies, hit_markers, explosions, game_over, boss=boss, fps=fps)
+        draw(player, elapsed_time, player_score, projectiles, bullets, boss_projectiles, enemies, hit_markers, explosions, game_over, boss=boss, fps=fps)
 
         if game_over:
              pygame.display.update()
