@@ -34,16 +34,37 @@ class Player:
         self.dash_tracker_x = 20
         self.dash_tracker_y = self.screen_height - 30
         self.dash_tracker_color = (40, 200, 255)
+        # movement tracker and speed-up
+        self.is_moving_horizontally = False
+        self.horizontal_move_start_time = None
+        self.horizontal_velocity_increase = 0
         
         self.game_over = False
 
 
     def move(self, keys):
-
         moving_horizontally = (keys[pygame.K_a] or keys[pygame.K_LEFT]) or (keys[pygame.K_d] or keys[pygame.K_RIGHT])
         moving_vertically = (keys[pygame.K_w] or keys[pygame.K_UP]) or (keys[pygame.K_s] or keys[pygame.K_DOWN])
 
         is_diagonal = moving_horizontally and moving_vertically
+
+        if moving_horizontally and not self.is_moving_horizontally:
+            self.is_moving_horizontally = True
+            self.horizontal_move_start_time = pygame.time.get_ticks()
+
+        if not moving_horizontally and self.is_moving_horizontally:
+            # Stopped moving horizontally
+            self.is_moving_horizontally = False
+            self.horizontal_velocity_increase = 0  # Reset velocity increase
+        
+        # Check for sustained horizontal movement
+        if self.is_moving_horizontally:
+            if pygame.time.get_ticks() - self.horizontal_move_start_time > 1000:  # 1 second
+                # Increase velocity by a certain amount, could also implement a max limit here
+                self.horizontal_velocity_increase = min(self.horizontal_velocity_increase + 0.5, 5)  # Example increment and max limit
+
+        if moving_horizontally:
+            self.velocity += self.horizontal_velocity_increase  # Adjust velocity based on sustained movement            
 
         # add dash
         if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
@@ -57,7 +78,6 @@ class Player:
         if is_diagonal:
             current_velocity /= math.sqrt(2)
     
-
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]):
             self.rect.x = max(0, self.rect.x - current_velocity)
             #self.rect.x = max(0, self.rect.x - current_velocity)      
