@@ -10,7 +10,7 @@ class Player:
     def __init__(self, x, y, image, width, height, velocity, screen_height, screen_width, bullet_velocity, bullet_width, bullet_height):
         self.image = image
         self.rect = self.image.get_rect(topleft=(x, y))
-        self.lives = 3
+        self.lives = 5
         self.current_hp = self.lives
         self.width = width
         self.height = height
@@ -38,7 +38,11 @@ class Player:
         self.is_moving_horizontally = False
         self.horizontal_move_start_time = None
         self.horizontal_velocity_increase = 0
-        
+        self.max_velocity = 12
+        self.previous_direction = None
+        self.velocity_increase_step = 1
+        self.direction_change_boost = 2
+
         self.game_over = False
 
 
@@ -48,59 +52,67 @@ class Player:
 
         is_diagonal = moving_horizontally and moving_vertically
 
-        if moving_horizontally and not self.is_moving_horizontally:
-            self.is_moving_horizontally = True
-            self.horizontal_move_start_time = pygame.time.get_ticks()
+        # Determine current moving direction
+        current_direction = None
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            current_direction = "left"
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            current_direction = "right"
 
-        if not moving_horizontally and self.is_moving_horizontally:
-            # Stopped moving horizontally
-            self.is_moving_horizontally = False
-            self.horizontal_velocity_increase = 0  # Reset velocity increase
-        
-        # Check for sustained horizontal movement
-        if self.is_moving_horizontally:
-            if pygame.time.get_ticks() - self.horizontal_move_start_time > 1000:  # 1 second
-                # Increase velocity by a certain amount, could also implement a max limit here
-                self.horizontal_velocity_increase = min(self.horizontal_velocity_increase + 0.5, 5)  # Example increment and max limit
+        # Check for direction change (reset increase if direction changes)
+        if current_direction != self.previous_direction and current_direction is not None:
+            self.horizontal_velocity_increase = 0
+            self.previous_direction = current_direction
 
         if moving_horizontally:
-            self.velocity += self.horizontal_velocity_increase  # Adjust velocity based on sustained movement            
+            if not self.is_moving_horizontally:
+                self.is_moving_horizontally = True
+                self.horizontal_move_start_time = pygame.time.get_ticks()
+        else:
+            self.is_moving_horizontally = False
+            self.horizontal_velocity_increase = 0  # Reset velocity increase when not moving horizontally
 
-        # add dash
-        if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
-            if not self.is_dashing and self.dash_timer == 0:
-                
-                self.is_dashing = True
-                self.dash_timer = self.dash_duration
-        # current speed bases on dash or not
-        current_velocity = self.dash_velocity if self.is_dashing else self.velocity  
-        # Adjust speed for diagonal movement 
+        # Sustained movement velocity increase
+        if self.is_moving_horizontally:
+            if pygame.time.get_ticks() - self.horizontal_move_start_time > 1000:  # 1 second
+                self.horizontal_velocity_increase = min(self.horizontal_velocity_increase + self.velocity_increase_step, self.max_velocity - self.velocity)
+
+        # Calculate current effective velocity
+        current_velocity = self.velocity + self.horizontal_velocity_increase
+        # Ensure current_velocity does not exceed max_velocity
+        current_velocity = min(current_velocity, self.max_velocity)
+
+        # Adjust speed for diagonal movement
         if is_diagonal:
             current_velocity /= math.sqrt(2)
-    
+
+        # Movement logic using current_velocity
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]):
             self.rect.x = max(0, self.rect.x - current_velocity)
-            #self.rect.x = max(0, self.rect.x - current_velocity)      
         if (keys[pygame.K_d] or keys[pygame.K_RIGHT]):
             self.rect.x = min(self.screen_width - self.width, self.rect.x + current_velocity)
-            #self.rect.x = min(self.screen_width - self.width, self.rect.x + current_velocity)
         if (keys[pygame.K_w] or keys[pygame.K_UP]):
-            self.rect.y = max(0, self.rect.y - current_velocity) 
+            self.rect.y = max(0, self.rect.y - current_velocity)
         if (keys[pygame.K_s] or keys[pygame.K_DOWN]):
             self.rect.y = min(self.screen_height - self.height, self.rect.y + current_velocity)
-        
-        # dash timer
+
+        # Dash logic remains unchanged
+        if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
+            if not self.is_dashing and self.dash_timer == 0:
+                self.is_dashing = True
+                self.dash_timer = self.dash_duration
+
+        # Dash timer countdown
         if self.is_dashing:
             self.dash_timer -= 1
             if self.dash_timer <= 0:
                 self.is_dashing = False
-                # start cooldown
                 self.dash_timer = -self.dash_cooldown
-        
-        # cooldown recovery
+
+        # Cooldown recovery
         if self.dash_timer < 0:
             self.dash_timer += 1
-            #print("Cooldown: ", self.dash_timer)
+
 
 
     def shoot(self, bullet_group, bullet_image):
