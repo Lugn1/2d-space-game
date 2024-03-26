@@ -24,7 +24,7 @@ class Player:
         self.last_shot = pygame.time.get_ticks()
         # add dash
         self.dash_velocity = self.velocity * 2
-        self.dash_duration = 10
+        self.dash_duration = 20
         self.dash_cooldown = 400
         self.is_dashing = False
         self.dash_timer = 0
@@ -38,7 +38,7 @@ class Player:
         self.is_moving_horizontally = False
         self.horizontal_move_start_time = None
         self.horizontal_velocity_increase = 0
-        self.max_velocity = 12
+        self.max_velocity = 10
         self.previous_direction = None
         self.velocity_increase_step = 1
         self.direction_change_boost = 2
